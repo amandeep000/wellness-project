@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* 1. Font faces */
+@font-face {
+  font-family: "styrene";
+  src: url("/fonts/Styrene\ B\ Regular\ Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "syne";
+  src: url("/fonts/Syne-VariableFont_wght.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. Theme tokens */
+@theme {
+  /* Palette */
+  --color-bg: #fbfaf6;
+  --color-accent: #fdd459;
+  --color-text-default: #151515;
+  --color-text-light: #f1f9ff;
+
+  /* Typography */
+  --font-syne: "syne", system-ui, sans-serif;
+  --font-styrene: "styrene", Georgia, serif;
+}
+
+/* 3. Base styles */
+body {
+  font-family: var(--font-syne);
+  background: var(--color-bg);
+  color: var(--color-text-default);
+}
+
+/* Optional: headings in Styrene */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-styrene);
+}
