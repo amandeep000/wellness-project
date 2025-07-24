@@ -8,7 +8,7 @@ type LinkButtonProps = {
 
 const LinkButton = ({ children, to, className = "" }: LinkButtonProps) => {
   return (
-    <Link to={to} className={`rounded-sm uppercase ${className}`}>
+    <Link to={to} className={`rounded-lg uppercase ${className}`}>
       {children}
     </Link>
   );

@@ -22,7 +22,7 @@ const Hero = () => {
     ? "/hero/df46b241ba554090aa85fb43e3762574.HD-1080p-7.2Mbps-41196432.webm"
     : "/hero/hero-video-desktop.webm";
   return (
-    <section className="w-full h-screen ">
+    <section className="relative w-full h-screen border-b">
       <div className="w-full h-full flex justify-center items-center">
         <div className="relative w-full h-full lg:w-1/2 overflow-hidden">
           <video
@@ -37,11 +37,11 @@ const Hero = () => {
             <img
               src={fallbackImg}
               alt="Hero fallback image"
-              className=" w-full h-full object-contain"
+              className=" w-full h-full object-cover"
             />
           </video>
           {/* for text above video */}
-          <div className="absolute w-full bottom-[50px] left-1/2 -translate-x-1/2 text-start z-10 flex flex-col justify-center items-center gap-y-8 flex-co px-3">
+          <div className="absolute w-full bottom-[50px] left-1/2 -translate-x-1/2 text-start z-10 flex flex-col justify-center items-center gap-y-8 flex-co px-3 md:px-5">
             <h2 className="w-full text-3xl md:text-[40px] font-styrene text-text-light uppercase">
               Fuel your health
             </h2>
@@ -64,7 +64,7 @@ const Hero = () => {
           <img
             src="/hero/main-image-wellness-desktop-girl.jpg"
             alt="wellness main girl image"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
           />
         </div>
       </div>
