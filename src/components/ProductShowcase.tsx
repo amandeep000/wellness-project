@@ -63,8 +63,10 @@ const Productshowcase = () => {
       </div>
       {/* products */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {products.map((product) => (
-          <ProductCard product={product} onAddToCart={handleAddToCart} />
+        {products.map((product, i) => (
+          <div key={i}>
+            <ProductCard product={product} onAddToCart={handleAddToCart} />
+          </div>
         ))}
       </div>
       <div className="w-full text-center mt-4">

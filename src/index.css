@@ -75,3 +75,39 @@ h6 {
 .nav-hover:hover::after {
   width: 100%;
 }
+
+/* our mission section read more ::after */
+/* .our_mission::after {
+  content: "";
+  height: 1px;
+  width: 98px;
+  background: #000;
+  bottom: -4px;
+  position: absolute;
+} */
+
+.our_mission::after {
+  content: "";
+  position: absolute;
+  width: 98px;
+  height: 1px;
+  background: #000;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* bouncing chevron for parallax section */
+@keyframes bounce-chevron {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.bounce-chevron {
+  animation: bounce-chevron infinite 1.3s ease-in-out;
+}

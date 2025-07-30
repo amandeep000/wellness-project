@@ -2,7 +2,7 @@ import LinkButton from "./LinkButton";
 
 const ParallexSection = () => {
   return (
-    <section className="relative w-full p-4 h-screen flex justify-center items-center border border-t-black gap-y-5">
+    <section className="relative w-full p-4 h-screen flex justify-center items-center border-black border-t gap-y-5">
       <div className="p-4 w-full text-center md:p-8 max-w-[865px] xl:px-20 xl:max-w-[1300px]">
         <h2 className="uppercase text-[32px] font-bold text-text-default mb-4 leading-9 xl:text-[92px] xl:leading-[102px]">
           Empowering your health naturally

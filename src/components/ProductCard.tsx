@@ -44,7 +44,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
           {product.title}
         </h3>
         <span className="text-sm md:text-base text-muted-foreground">
-          {product.price.toFixed(2)}
+          {`$${product.price.toFixed(2)}`}
         </span>
       </Link>
 
