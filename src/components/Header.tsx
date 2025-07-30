@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ResponsiveNav from "./ResponsiveNav";
 
 const Header = () => {
   const [isResponsiveNavOpen, setIsResponsiveNavOpen] = useState(false);
@@ -8,7 +7,7 @@ const Header = () => {
   };
   return (
     <>
-      <header className="absolute inset-0 w-full z-40 ">
+      <header className="absolute w-full z-40 ">
         <div className="w-full flex justify-between items-center py-4 px-4 xl:px-8 xl:py-[20px] backdrop-blur-[80px] border border-b-black">
           {/* logo */}
           <div className="order-2 xl:order-1">

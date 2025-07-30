@@ -41,21 +41,23 @@ const Hero = () => {
             />
           </video>
           {/* for text above video */}
-          <div className="absolute w-full bottom-[50px] left-1/2 -translate-x-1/2 text-start z-10 flex flex-col justify-center items-center gap-y-8 flex-co px-3 md:px-5">
-            <h2 className="w-full text-3xl md:text-[40px] font-styrene text-text-light uppercase">
-              Fuel your health
-            </h2>
-            <div className="w-full bg-bg/50 h-0.5"></div>
-            <p className="uppercase text-text-light tracking-wider w-full md:text-lg">
-              future of wellness
-            </p>
-            <div className="w-full">
-              <Link
-                to={"#"}
-                className="px-6 py-3 bg-bg border border-black uppercase rounded-md mt-2 text-[14px] text-[#151516] tracking-wider"
-              >
-                Check now
-              </Link>
+          <div className="absolute inset-0 top-[83px] text-center z-20 flex flex-col justify-center items-center lg:justify-end lg:bottom-5 lg:w-[85%] lg:items-start mx-auto">
+            <div className="w-[80%] lg:w-[85%] xl:w-[92%] mb-8">
+              <p className="capitalize text-black tracking-wider w-full text-xs mb-4 font-semibold md:text-base lg:text-start xl:pl-2">
+                The future of wellness
+              </p>
+              <h2 className="font-syne text-text-default  mb-4 leading-[44px] tracking-wide uppercase text-[40px] xl:text-[66px] xl:leading-[73px] font-bold lg:text-start">
+                Gear up for great health
+              </h2>
+
+              <button className="w-full mt-[10px] lg:text-start cursor-pointer">
+                <Link
+                  to={""}
+                  className="px-6 py-4 bg-bg border border-black uppercase rounded-lg mt-2 text-xs text-black font-bold tracking-wider cursor-pointer"
+                >
+                  Check now
+                </Link>
+              </button>
             </div>
           </div>
         </div>

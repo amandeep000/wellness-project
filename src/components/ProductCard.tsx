@@ -30,7 +30,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         />
         <button
           onClick={() => onAddToCart(product)}
-          className="absolute hidden lg:block bottom-0 translate-y-[40px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-in-out w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none mx-4"
+          className="absolute hidden lg:block bottom-0 translate-y-[40px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-in-out w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none px-4"
         >
           Add To Cart
         </button>
@@ -50,7 +50,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
 
       <button
         onClick={() => onAddToCart(product)}
-        className="mx-4 w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none transition-all duration-300 ease-in-out lg:hidden"
+        className="px-4 w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none transition-all duration-300 ease-in-out lg:hidden"
       >
         Add To Cart
       </button>
