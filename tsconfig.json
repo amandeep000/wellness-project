@@ -26,7 +26,9 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.js",
-    "eslint.config.js"
+    "eslint.config.js",
+    "declarations.d.ts",
+    "src/types/splide.d.ts"
   ]
   // If you removed "references": [{ "path": "./tsconfig.node.json" }], keep it removed.
 }

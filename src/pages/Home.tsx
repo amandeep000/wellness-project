@@ -5,6 +5,7 @@ import ScienceBacked from "../components/ScienceBacked";
 import OurMission from "../components/OurMission";
 import ParallexSection from "../components/ParallexSection";
 import FeaturedOn from "../components/FeaturedOn";
+import HeroMissionVideo from "../components/HeroMissionVideo";
 
 const Home = () => {
   return (
@@ -16,6 +17,7 @@ const Home = () => {
       <ScienceBacked />
       <ParallexSection />
       <FeaturedOn />
+      <HeroMissionVideo />
     </main>
   );
 };
