@@ -6,6 +6,7 @@ import OurMission from "../components/OurMission";
 import ParallexSection from "../components/ParallexSection";
 import FeaturedOn from "../components/FeaturedOn";
 import HeroMissionVideo from "../components/HeroMissionVideo";
+import ReviewTemplate from "../components/ReviewTemplate";
 
 const Home = () => {
   return (
@@ -18,6 +19,7 @@ const Home = () => {
       <ParallexSection />
       <FeaturedOn />
       <HeroMissionVideo />
+      <ReviewTemplate />
     </main>
   );
 };
