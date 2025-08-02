@@ -4,7 +4,7 @@ import "@splidejs/react-splide/css";
 
 const slides = [
   {
-    Image: "/homereview/collagen-picture-1.webp",
+    Image: "/homereview/pexels-danxavier-1212984.jpg",
     name: "Aura W.",
     description:
       "Finally,a product that delivers on its promises.My skin glows, and i feel amazing inside and out.",
@@ -36,7 +36,7 @@ const FeaturedOn = () => {
                   <img
                     src={slide.Image}
                     alt={`${slide.name}`}
-                    className="rounded-full w-[100px] h-[100px] object-cover object-center"
+                    className="rounded-full w-[100px] h-[100px] lg:w-[110px] lg:h-[110px] object-cover object-bottom"
                   />
                   <div className="flex items-center justify-center p-4">
                     {[...Array(5)].map((_, index) => (

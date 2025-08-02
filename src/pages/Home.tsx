@@ -7,6 +7,8 @@ import ParallexSection from "../components/ParallexSection";
 import FeaturedOn from "../components/FeaturedOn";
 import HeroMissionVideo from "../components/HeroMissionVideo";
 import ReviewTemplate from "../components/ReviewTemplate";
+import HomeNewsletter from "../components/HomeNewsletter";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -14,12 +16,14 @@ const Home = () => {
       <Hero />
       <Productshowcase />
       <BoostEnergy />
-      <OurMission />
       <ScienceBacked />
+      <OurMission />
       <ParallexSection />
       <FeaturedOn />
       <HeroMissionVideo />
       <ReviewTemplate />
+      <HomeNewsletter />
+      <Footer />
     </main>
   );
 };

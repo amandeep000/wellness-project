@@ -40,7 +40,7 @@ const slides = [
 
 const FeaturedOn = () => {
   return (
-    <section className="pt-6 pb-6 lg:pb-0 border-black border-y">
+    <section className="pt-6 pb-6 lg:pb-0 border-black border-b">
       <FeaturedonText />
       <div className="w-full">
         <Splide
