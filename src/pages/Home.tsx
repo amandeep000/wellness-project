@@ -9,11 +9,13 @@ import HeroMissionVideo from "../components/HeroMissionVideo";
 import ReviewTemplate from "../components/ReviewTemplate";
 import HomeNewsletter from "../components/HomeNewsletter";
 import Footer from "../components/Footer";
+import ResponsiveNav from "../components/ResponsiveNav";
 
 const Home = () => {
   return (
     <main>
       <Hero />
+      <ResponsiveNav />
       <Productshowcase />
       <BoostEnergy />
       <ScienceBacked />
