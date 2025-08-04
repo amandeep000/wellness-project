@@ -10,12 +10,13 @@ import ReviewTemplate from "../components/ReviewTemplate";
 import HomeNewsletter from "../components/HomeNewsletter";
 import Footer from "../components/Footer";
 import ResponsiveNav from "../components/ResponsiveNav";
+import ShopHover from "../components/ShopHover";
+import Search from "../components/Search";
 
 const Home = () => {
   return (
     <main>
       <Hero />
-      <ResponsiveNav />
       <Productshowcase />
       <BoostEnergy />
       <ScienceBacked />
@@ -26,6 +27,9 @@ const Home = () => {
       <ReviewTemplate />
       <HomeNewsletter />
       <Footer />
+      {/* <Search /> */}
+      {/* <ShopHover /> */}
+      {/* <ResponsiveNav /> */}
     </main>
   );
 };

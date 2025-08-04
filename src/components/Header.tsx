@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isResponsiveNavOpen, setIsResponsiveNavOpen] = useState(false);
@@ -11,11 +12,14 @@ const Header = () => {
         <div className="w-full flex justify-between items-center py-4 px-4 xl:px-8 xl:py-[20px] backdrop-blur-[80px] border border-b-black">
           {/* logo */}
           <div className="order-2 xl:order-1">
-            <img
-              src="/logo/wellness-logo.svg"
-              alt="wellness logo"
-              className="h-[23px] xl:h-[32px]  object-center object-cover"
-            />
+            <Link to={"/"}>
+              {" "}
+              <img
+                src="/logo/wellness-logo.svg"
+                alt="wellness logo"
+                className="h-[23px] xl:h-[32px]  object-center object-cover"
+              />
+            </Link>
           </div>
           {/* navlinks */}
           <nav className="hidden xl:flex justify-center items-center order-2 flex-1">
@@ -46,10 +50,10 @@ const Header = () => {
                 science
               </li>
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default">
-                about
+                <Link to={"/faq"}>Faq</Link>
               </li>
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default">
-                contact
+                <Link to={"/contact"}>contact</Link>
               </li>
             </ul>
           </nav>
