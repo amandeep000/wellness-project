@@ -13,9 +13,7 @@ const HomeProductswiper = () => {
     <section className="w-full h-full border-black border-y">
       <div className="w-full h-full">
         {/* swiper */}
-        <div>
-          <Swiper modules={[Navigation, Pagination]}></Swiper>
-        </div>
+        <div>{/* <Swiper modules={[Navigation, Pagination]}></Swiper> */}</div>
         {/* content */}
         <div></div>
       </div>

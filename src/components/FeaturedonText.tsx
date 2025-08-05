@@ -9,7 +9,7 @@ export default function AnimatedText() {
   ];
 
   // Only duplicate once for seamless loop
-  const allImages = [...imageData, ...imageData];
+  const allImages = [...imageData, ...imageData, ...imageData, ...imageData];
 
   return (
     <div className="w-full overflow-hidden py-4 bg-bg">
@@ -39,7 +39,7 @@ export default function AnimatedText() {
         }
 
         .animate-scroll {
-          animation: scroll 30s linear infinite;
+          animation: scroll 20s linear infinite;
         }
       `}</style>
     </div>

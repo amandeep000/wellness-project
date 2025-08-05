@@ -8,7 +8,7 @@ const Header = () => {
   };
   return (
     <>
-      <header className="fixed w-full z-40">
+      <header className="sticky top-0 w-full z-40">
         <div className="w-full flex justify-between items-center py-4 px-4 xl:px-8 xl:py-[20px] backdrop-blur-[80px] border border-b-black">
           {/* logo */}
           <div className="order-2 xl:order-1">
@@ -47,7 +47,7 @@ const Header = () => {
                 about
               </li>
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default">
-                science
+                <Link to={"/science"}>science</Link>
               </li>
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default">
                 <Link to={"/faq"}>Faq</Link>

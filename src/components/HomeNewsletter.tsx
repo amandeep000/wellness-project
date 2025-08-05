@@ -29,12 +29,15 @@ const HomeNewsletter = () => {
             <input
               type="email"
               placeholder="Email"
-              className="rounded-tl-lg rounded-bl-lg bg-bg py-2 px-3 border flex-1 xl:py-3 xl:px-4"
+              className="md:rounded-tl-lg md:rounded-bl-lg md:rounded-tr-none md:rounded-br-none bg-bg py-2 px-3 border flex-1 xl:py-3 xl:px-4 rounded-lg lg:border-black"
             />
-            <button className="bg-text-default text-text-light rounded-tr-lg rounded-br-lg px-3 py-2 border-y border-r cursor-pointer border-black xl:py-3 xl:px-4">
+            <button className="hidden md:block bg-text-default text-text-light rounded-tr-lg rounded-br-lg px-3 py-2 border-y border-r cursor-pointer border-black xl:py-3 xl:px-4">
               Subscribe
             </button>
           </div>
+          <button className="rounded-lg bg-text-default py-2 px-3 w-full text-text-light uppercase font-semibold tracking-wide cursor-pointer md:hidden">
+            Subscribe
+          </button>
         </div>
       </div>
     </div>

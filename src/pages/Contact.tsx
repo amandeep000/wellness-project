@@ -10,11 +10,11 @@ const Contact = () => {
           loop
           muted
           poster="/pagesGraphicData/contact-poster-mobile.webp"
-          className="max-h-[500px] w-full object-cover pt-[61px] xl:pt-[73px]"
+          className="max-h-[500px] w-full object-cover"
         >
           <source src="/hero/hero-video-desktop.webm" />
         </video>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mt-[30px]">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <h2 className="text-3xl lg:text-[41px] xl:text-7xl text-text-light uppercase font-bold">
             Contact
           </h2>

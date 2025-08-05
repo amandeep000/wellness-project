@@ -26,7 +26,7 @@ const Home = () => {
       <HeroMissionVideo />
       <ReviewTemplate />
       <HomeNewsletter />
-      <Footer />
+      {/* <Footer /> */}
       {/* <Search /> */}
       {/* <ShopHover /> */}
       {/* <ResponsiveNav /> */}

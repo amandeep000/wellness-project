@@ -2,7 +2,7 @@ import LinkButton from "./LinkButton";
 
 const HeroMissionVideo = () => {
   return (
-    <section className="relative w-full h-full bg-amber-300">
+    <section className="relative w-full h-full ">
       <div className="w-full h-full">
         <video
           autoPlay
@@ -18,7 +18,7 @@ const HeroMissionVideo = () => {
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full z-20 mt-5">
         <div className="flex flex-col justify-center items-center p-8 max-w-[600px] xl:max-w-[825px]  mx-auto">
           <p className="text-text-light capitalize font-semibold tracking-wider mb-2.5">
-            fuel your body,sustain the planet
+            fuel you health,sustain planet
           </p>
           <h2 className="font-bold text-2xl text-text-light uppercase px-1 text-center mb-4 leading-7 xl:text-[55px] xl:leading-[61px]">
             Sustainable Solutions for a Healthier Life.
