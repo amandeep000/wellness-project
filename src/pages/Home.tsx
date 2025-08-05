@@ -12,6 +12,7 @@ import Footer from "../components/Footer";
 import ResponsiveNav from "../components/ResponsiveNav";
 import ShopHover from "../components/ShopHover";
 import Search from "../components/Search";
+import OurBestsellers from "../components/OurBestsellers";
 
 const Home = () => {
   return (
@@ -26,6 +27,7 @@ const Home = () => {
       <HeroMissionVideo />
       <ReviewTemplate />
       <HomeNewsletter />
+      {/* <OurBestsellers /> */}
       {/* <Footer /> */}
       {/* <Search /> */}
       {/* <ShopHover /> */}

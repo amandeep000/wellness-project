@@ -25,7 +25,7 @@ const Header = () => {
           <nav className="hidden xl:flex justify-center items-center order-2 flex-1">
             <ul className="flex justify-center items-center">
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default flex justify-center items-center gap-x-[2px]">
-                shop
+                <Link to={"/shop"}>shop</Link>
                 <span className="hover:rotate-y-180">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ const Header = () => {
                 </span>
               </li>
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default">
-                about
+                <Link to={"/about"}>about</Link>
               </li>
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default">
                 <Link to={"/science"}>science</Link>

@@ -8,6 +8,8 @@ import Home from "../pages/Home";
 import Contact from "../pages/Contact";
 import Faq from "../pages/Faq";
 import Science from "../pages/Science";
+import About from "../pages/About";
+import Shop from "../pages/Shop";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,6 +18,8 @@ const Router = createBrowserRouter(
       <Route path="/contact" element={<Contact />} />
       <Route path="/faq" element={<Faq />} />
       <Route path="/science" element={<Science />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/shop" element={<Shop />} />
     </Route>
   )
 );
