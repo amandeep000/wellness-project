@@ -13,10 +13,10 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   return (
-    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md 2xl:max-w-full flex flex-col">
+    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md 2xl:max-w-full flex flex-col mx-auto">
       <Link
         to={`/product/${product.slug}`}
-        className="relative w-full aspect-[3/4] overflow-hidden group block"
+        className="relative w-full aspect-[4/4] overflow-hidden group block"
       >
         <img
           src={product.image}
@@ -33,7 +33,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         {onAddToCart && (
           <button
             onClick={() => onAddToCart(product)}
-            className="absolute hidden lg:block bottom-0 translate-y-[40px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-in-out w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none px-4"
+            className="absolute hidden lg:block bottom-0 translate-y-[40px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-in-out w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none px-4 cursor-pointer"
           >
             Add To Cart
           </button>

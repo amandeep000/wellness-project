@@ -27,9 +27,9 @@ const BoostEnergy = () => {
         <div className="flex justify-center items-center">
           <LinkButton
             className="uppercase px-6 py-4 tracking-wider bg-bg text-xs font-syne font-semibold border"
-            to="#"
+            to="/about"
           >
-            Boost Energy
+            About us
           </LinkButton>
         </div>
       </div>

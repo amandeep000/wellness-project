@@ -71,7 +71,7 @@ const Productshowcase = () => {
       </div>
       <div className="w-full text-center mt-4">
         <Link
-          to={"#"}
+          to={"/shop"}
           className="uppercase tracking-wider text-xs font-semibold border-b"
         >
           View all

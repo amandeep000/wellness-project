@@ -52,7 +52,7 @@ const Hero = () => {
 
               <button className="w-full mt-[10px] lg:text-start cursor-pointer">
                 <Link
-                  to={""}
+                  to={"/shop"}
                   className="px-6 py-4 bg-bg border border-black uppercase rounded-lg mt-2 text-xs text-black font-bold tracking-wider cursor-pointer"
                 >
                   Check now

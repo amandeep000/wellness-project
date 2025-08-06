@@ -27,7 +27,7 @@ const featureBannerData = [
 
 const FeatureBanner = () => {
   return (
-    <div className="w-full py-10 mb-16 border-black border-y">
+    <div className="w-full py-10 border-black border-y">
       <div className="px-6 xl:px-10">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {featureBannerData.map((item, idx) => (
