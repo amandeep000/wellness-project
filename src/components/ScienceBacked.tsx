@@ -1,3 +1,15 @@
+type ScienceItem = {
+  img: string;
+  alt: string;
+  title: string;
+  desc: string;
+};
+
+interface ScienceBackedProps {
+  sectionHeading: string;
+  items: ScienceItem[];
+}
+
 const ScienceBacked = () => {
   const items = [
     {
@@ -5,36 +17,42 @@ const ScienceBacked = () => {
       alt: "non gmo image",
       title: "non-gmo",
       desc: "We carefully evaluate every ingredient, ensuring they are non-GMO.",
+      sectionHeading: " Science - driven confidence boost",
     },
     {
       img: "/scienceBacked/quality.png",
       alt: "quality ingredients image",
       title: "Quality ingredients",
       desc: "We're dedicated to using scientifically backed, high-quality natural ingredients.",
+      sectionHeading: " Science - driven confidence boost",
     },
     {
       img: "/scienceBacked/eng-ico.png",
       alt: "engineered image",
       title: "Engineered for Effectiveness",
       desc: "Our formulations are crafted to maximize potency and absorption.",
+      sectionHeading: " Science - driven confidence boost",
     },
     {
       img: "/scienceBacked/lab.png",
       alt: "lab tested image",
       title: "Third-party tested",
       desc: "We hold ourselves and our ingredients to the highest standards.",
+      sectionHeading: " Science - driven confidence boost",
     },
     {
       img: "/scienceBacked/vegan-2.png",
       alt: "Vegan image",
       title: "Vegan",
       desc: "We ensure the highest standards with 100% vegan, cruelty-free formulations.",
+      sectionHeading: " Science - driven confidence boost",
     },
     {
       img: "/scienceBacked/nometal-2.png",
       alt: "no metal image",
       title: "No heavy metals",
       desc: "We guarantee the highest purity, ensuring our products are free from heavy metals.",
+      sectionHeading: " Science - driven confidence boost",
     },
   ];
 

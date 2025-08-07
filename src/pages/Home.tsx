@@ -8,18 +8,15 @@ import FeaturedOn from "../components/FeaturedOn";
 import HeroMissionVideo from "../components/HeroMissionVideo";
 import ReviewTemplate from "../components/ReviewTemplate";
 import HomeNewsletter from "../components/HomeNewsletter";
-import Footer from "../components/Footer";
-import ResponsiveNav from "../components/ResponsiveNav";
-import ShopHover from "../components/ShopHover";
-import Search from "../components/Search";
-import OurBestsellers from "../components/OurBestsellers";
 
 const Home = () => {
   return (
     <main>
       <Hero />
       <Productshowcase />
-      <BoostEnergy />
+      <div className="w-full">
+        <BoostEnergy />
+      </div>
       <ScienceBacked />
       <OurMission />
       <ParallexSection />
@@ -27,11 +24,6 @@ const Home = () => {
       <HeroMissionVideo />
       <ReviewTemplate />
       <HomeNewsletter />
-      {/* <OurBestsellers /> */}
-      {/* <Footer /> */}
-      {/* <Search /> */}
-      {/* <ShopHover /> */}
-      {/* <ResponsiveNav /> */}
     </main>
   );
 };

@@ -115,6 +115,20 @@ h6 {
   animation: bounce-chevron infinite 1.3s ease-in-out;
 }
 
+@keyframes progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-progress {
+  animation: progress 4s linear infinite;
+}
+
+/* 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -229,4 +243,4 @@ h6 {
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
