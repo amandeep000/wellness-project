@@ -11,6 +11,10 @@ import Science from "../pages/Science";
 import About from "../pages/About";
 import Shop from "../pages/Shop";
 import ProductPage from "../pages/ProductPage";
+import Login from "../pages/Login";
+import Signup from "../pages/Signup";
+import Profile from "../pages/Profile";
+import ProtectedRoutes from "./protectedRoutes";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +26,11 @@ const Router = createBrowserRouter(
       <Route path="/about" element={<About />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/productpage" element={<ProductPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/account" element={<ProtectedRoutes />}>
+        <Route path="profile" element={<Profile />} />
+      </Route>
     </Route>
   )
 );
