@@ -3,8 +3,16 @@ import FeaturedonText from "../components/FeaturedonText";
 import OurTeam from "../components/OurTeam";
 import HomeNewsletter from "../components/HomeNewsletter";
 import FeatureBanner from "../components/FeatureBanner";
+import { useEffect } from "react";
 
 const About = () => {
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <section className="w-full">
       <div className="w-full relative">

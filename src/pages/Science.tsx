@@ -1,6 +1,7 @@
 import ScienceBacked from "../components/ScienceBacked";
 import FeaturedonText from "../components/FeaturedonText";
 import HomeNewsletter from "../components/HomeNewsletter";
+import { useEffect } from "react";
 
 const Science = () => {
   const missionData = [
@@ -10,6 +11,13 @@ const Science = () => {
         "Wellness Inc. envisions a future where biology and technology unite, unlocking new possibilities and redefining innovation.",
     },
   ];
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <section className="w-full">
       <div className="w-full h-full relative">

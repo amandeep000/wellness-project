@@ -86,7 +86,7 @@ const Footer = () => {
         <div className="text-xs md:text-sm border-white/20 border-b py-4 mb-6 flex flex-wrap justify-between items-center gap-2">
           <span>Terms & Conditions</span>
           <span>Privacy & Cookie</span>
-          <span>© Aura-wolf-wellness Ltd 2025</span>
+          <span>Made with ❤️ and lines of code by Aman(AuraWolf)</span>
         </div>
 
         {/* Logo */}

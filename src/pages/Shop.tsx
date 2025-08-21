@@ -3,6 +3,7 @@ import ProductCard from "../components/ProductCard";
 import BoostEnergy from "../components/BoostEnergy";
 import FeatureBanner from "../components/FeatureBanner";
 import HomeNewsletter from "../components/HomeNewsletter";
+import { useEffect } from "react";
 
 const allProducts = [
   {
@@ -58,6 +59,13 @@ const allProducts = [
 
 const Shop = () => {
   const handleAddToCart = () => {};
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <section className="w-full">
       <div className="w-full relative">

@@ -3,7 +3,7 @@ import { FreeMode, Thumbs, Controller, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/thumbs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, Minus } from "lucide-react";
 import ProductAccordion from "../components/ProductAccordion";
@@ -117,6 +117,13 @@ const IngredientItems = [
   },
 ];
 
+useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  });
+}, []);
 const ProductPage = () => {
   const [thumbSwiper, setThumbSwiper] = useState<any>(null);
   const [activeIndex, setActiveIndex] = useState(0);

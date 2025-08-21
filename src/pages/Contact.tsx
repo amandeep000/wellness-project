@@ -1,6 +1,14 @@
+import { useEffect } from "react";
 import Footer from "../components/Footer";
 
 const Contact = () => {
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <section className="w-full">
       <div className="w-full relative">

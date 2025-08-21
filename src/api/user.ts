@@ -1,33 +1,32 @@
 import api from "./axios";
 import { User } from "../types/user";
-import { data } from "react-router-dom";
 
 export const getCurrentUser = async (): Promise<User | null> => {
-  const res = await api.get("/user/me");
+  const res = await api.get("/api/v1/user/me");
   return res.data;
 };
 
 export const updateProfile = async (data: any) => {
-  const res = await api.put("/user/profile", data);
+  const res = await api.put("/api/v1/user/profile", data);
   return res.data.updatedUser;
 };
 
 export const updateAvatar = async (data: any) => {
-  const res = await api.put("/profile/avatar", data);
+  const res = await api.put("/api/v1/profile/avatar", data);
   return res.data;
 };
 
 export const addAddress = async (data: any) => {
-  const res = await api.post("/addresses", data);
+  const res = await api.post("/api/v1/addresses", data);
   return res.data;
 };
 
 export const updateAddress = async (addressId: string, data: any) => {
-  const res = await api.put(`addresses/:${addressId},data`);
+  const res = await api.put(`/api/v1/addresses/:${addressId},data`);
   return res.data;
 };
 
 export const deleteAddress = async (addressId: string) => {
-  const res = await api.delete("/addresses/:${addressId}");
+  const res = await api.delete("/api/v1/addresses/:${addressId}");
   return res.data;
 };

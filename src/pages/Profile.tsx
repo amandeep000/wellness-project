@@ -1,5 +1,5 @@
 // components/ProfilePage.tsx
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { User, ShoppingBag, Home, List, LogOut, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import useUpdateAvatar from "../hooks/useUpdateAvatar";
@@ -82,6 +82,13 @@ const Profile = () => {
     );
   };
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <div className=" min-h-screen bg-white text-black p-4">
       <div className="flex flex-col lg:flex-row mx-auto justify-center">
