@@ -117,13 +117,6 @@ const IngredientItems = [
   },
 ];
 
-useEffect(() => {
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "smooth",
-  });
-}, []);
 const ProductPage = () => {
   const [thumbSwiper, setThumbSwiper] = useState<any>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -138,6 +131,13 @@ const ProductPage = () => {
     }
   };
   const handleAddToCart = () => {};
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
   return (
     <section className={`w-full `}>
       {/* container div */}
