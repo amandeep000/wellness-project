@@ -1,11 +1,25 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import ResponsiveNav from "./ResponsiveNav";
+import { useAppDispatch, useAppSelector } from "../hooks/TypedHooks.ts";
+import { openMobileNav, closeMobileNav } from "../store/slices/HeaderSlice.ts";
+import { openShopDropdown } from "../store/slices/HeaderSlice.ts";
+import ShopHover from "./ShopHover.tsx";
 
 const Header = () => {
-  const [isResponsiveNavOpen, setIsResponsiveNavOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const isMobileNavOpen = useAppSelector(
+    (state) => state.header.isMobileNavOpen
+  );
+
   const handleResNav = () => {
-    setIsResponsiveNavOpen((prev) => !prev);
+    if (isMobileNavOpen) {
+      dispatch(closeMobileNav());
+    } else {
+      dispatch(openMobileNav());
+    }
   };
+  const handleShopHover = () => {};
   return (
     <>
       <header className="sticky top-0 w-full z-40">
@@ -13,7 +27,6 @@ const Header = () => {
           {/* logo */}
           <div className="order-2 xl:order-1">
             <Link to={"/"}>
-              {" "}
               <img
                 src="/logo/wellness-logo.svg"
                 alt="wellness logo"
@@ -21,10 +34,14 @@ const Header = () => {
               />
             </Link>
           </div>
+
           {/* navlinks */}
           <nav className="hidden xl:flex justify-center items-center order-2 flex-1">
             <ul className="flex justify-center items-center">
-              <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default flex justify-center items-center gap-x-[2px]">
+              <li
+                onMouseEnter={() => dispatch(openShopDropdown())}
+                className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default flex justify-center items-center gap-x-[2px]"
+              >
                 <Link to={"/shop"}>shop</Link>
                 <span className="hover:rotate-y-180">
                   <svg
@@ -57,6 +74,7 @@ const Header = () => {
               </li>
             </ul>
           </nav>
+
           {/* header buttons */}
           <div className="flex justify-center items-center order-3 gap-x-4">
             {/* search button */}
@@ -75,7 +93,6 @@ const Header = () => {
               />
             </svg>
             <Link to={"/account/profile"}>
-              {/* user */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -108,7 +125,8 @@ const Header = () => {
               />
             </svg>
           </div>
-          {/* responsive nav */}
+
+          {/* responsive nav trigger */}
           <div className="flex justify-start items-center order-1 gap-x-4 xl:hidden">
             {/* ham menu */}
             <span onClick={handleResNav} className="cursor-pointer">
@@ -127,7 +145,8 @@ const Header = () => {
                 />
               </svg>
             </span>
-            {/* serach icon for sm,md & lg displays */}
+
+            {/* search icon for sm,md & lg */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -145,7 +164,12 @@ const Header = () => {
           </div>
         </div>
       </header>
-      {/* responsive nav */}
+      <ShopHover />
+      {/* ResponsiveNav */}
+      <ResponsiveNav
+        handleResNav={handleResNav}
+        isResponsiveNavOpen={isMobileNavOpen}
+      />
     </>
   );
 };

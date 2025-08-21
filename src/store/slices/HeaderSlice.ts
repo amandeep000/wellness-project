@@ -20,6 +20,7 @@ const headerSlice = createSlice({
     openShopDropdown(state) {
       state.isShopDropdownOpen = true;
       state.overlayVisible = true;
+      state.scrollLocked = true;
     },
     closeShopDropdown(state) {
       state.isShopDropdownOpen = false;
