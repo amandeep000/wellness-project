@@ -22,11 +22,11 @@ export const addAddress = async (data: any) => {
 };
 
 export const updateAddress = async (addressId: string, data: any) => {
-  const res = await api.put(`/api/v1/addresses/${addressId},data`);
+  const res = await api.put(`/api/v1/addresses/:${addressId},data`);
   return res.data;
 };
 
 export const deleteAddress = async (addressId: string) => {
-  const res = await api.delete(`/api/v1/addresses/${addressId}`);
+  const res = await api.delete("/api/v1/addresses/:${addressId}");
   return res.data;
 };

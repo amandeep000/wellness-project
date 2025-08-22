@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "../api/user";
 import { useAddAddress } from "../hooks/useAddress";
+import { current } from "@reduxjs/toolkit";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -19,7 +20,7 @@ const Profile = () => {
     queryKey: ["currentUser"],
     queryFn: getCurrentUser, // change the types of current user add a type alias or the interface for currentUser
   });
-  const currentUser = data;
+  const currentUser = data?.currentUser;
   const {
     mutate: uploadAvatar,
     isPending,
