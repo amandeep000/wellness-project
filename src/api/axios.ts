@@ -35,7 +35,11 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post("/auth/refresh-token", {}, { withCredentials: true });
+        await api.post(
+          "/api/v1/auth/refresh-token",
+          {},
+          { withCredentials: true }
+        );
         processQueue(null, true);
         return api(originalRequest); // retry the failed request
       } catch (refreshError: any) {
