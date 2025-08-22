@@ -8,7 +8,14 @@ import { updateProfile, updateAvatar } from "../api/user";
 export function useAuth() {
   return useQuery<User | null>({
     queryKey: ["currentUser"],
-    queryFn: getCurrentUser,
+    queryFn: async () => {
+      try {
+        const user = await getCurrentUser();
+        return user;
+      } catch (error) {
+        return null;
+      }
+    },
     retry: false,
     staleTime: 7 * 60 * 1000,
   });
