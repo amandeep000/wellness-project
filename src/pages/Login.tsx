@@ -24,7 +24,6 @@ const Login = () => {
     password: "",
   });
   const [errors, setErrors] = useState<LoginErrors>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const isLoading = loginMutation.isPending;
 
@@ -70,12 +69,11 @@ const Login = () => {
     if (Object.keys(newErrors).length > 0) return;
 
     try {
-      await loginMutation.mutateAsync(formData);
+      const userData = await loginMutation.mutateAsync(formData);
 
-      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      queryClient.setQueryData(["currentUser"], userData);
 
-      setIsSubmitted(true);
-      setTimeout(() => navigate("/account/profile"), 1500);
+      navigate("/account/profile", { replace: true });
     } catch (err: any) {
       console.error("Login error:", err);
 
@@ -94,30 +92,6 @@ const Login = () => {
       setErrors(fieldErrors);
     }
   };
-
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen relative overflow-hidden">
-        <div className="absolute inset-0 ">
-          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-        </div>
-
-        <div className="absolute top-20 left-20 w-32 h-32 bg-white/20 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 right-20 w-48 h-48 bg-white/15 rounded-full blur-xl"></div>
-        <div className="absolute top-1/2 left-10 w-24 h-24 bg-white/25 rounded-full blur-xl"></div>
-
-        <div className="relative min-h-screen flex items-center justify-center p-4">
-          <div className="text-center text-white">
-            <div className="w-16 h-16 border-4 border-white rounded-full mx-auto mb-4 flex items-center justify-center backdrop-blur-sm bg-white/10">
-              <span className="text-2xl">✓</span>
-            </div>
-            <h2 className="text-3xl font-bold mb-2">Welcome Back!</h2>
-            <p className="text-white/80">You have successfully logged in</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">

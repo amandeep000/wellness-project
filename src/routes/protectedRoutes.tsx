@@ -6,6 +6,8 @@ const ProtectedRoutes = () => {
   if (isLoading) {
     return <p>Loading...</p>;
   }
-  return user ? <Outlet /> : <Navigate to={"/login"} replace />;
+  if (user) return <Navigate to={"/login"} replace />;
+  if (location.pathname === "/account")
+    return <Navigate to={"/account/profile"} replace />;
 };
 export default ProtectedRoutes;
