@@ -5,7 +5,10 @@ const ProtectedRoutes = () => {
   const { data: user, isLoading, error } = useAuth();
 
   if (isLoading) return <p>Loading...</p>;
-  if (error || !user) return <Navigate to="/login" replace />;
+  if (error || !user) {
+    console.log("Redirecting to login due to:", error || "No user");
+    return <Navigate to="/login" replace />;
+  }
 
   return <Outlet />;
 };
