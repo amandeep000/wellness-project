@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "../api/user";
 import { useAddAddress } from "../hooks/useAddress";
+import { current } from "@reduxjs/toolkit";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -163,7 +164,9 @@ const Profile = () => {
           <section className="space-y-6">
             <div>
               <div className="flex justify-between items-center">
-                <p className="font-medium">Name: John Doe</p>
+                <p className="font-medium">
+                  {currentUser?.fullname || "Guest User"}
+                </p>
                 <button
                   className="text-sm text-blue-600 hover:underline"
                   onClick={() =>
@@ -194,7 +197,9 @@ const Profile = () => {
 
             <div>
               <div className="flex justify-between items-center">
-                <p className="font-medium">{"John Aura Wolf"}</p>
+                <p className="font-medium">
+                  {currentUser?.email || "aura@gmail.com"}
+                </p>
                 <button
                   className="text-sm text-blue-600 hover:underline"
                   onClick={() =>

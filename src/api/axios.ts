@@ -36,7 +36,7 @@ api.interceptors.response.use(
         await api.post("/auth/refresh-token");
       } catch (error) {
         processQueue(error, false);
-        window.location.href = "/login"; // force loguot
+        window.location.href = "/"; // force loguot
         return Promise.reject(error);
       } finally {
         isRefreshing = false;
