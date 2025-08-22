@@ -2,30 +2,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { User, ShoppingBag, Home, List, LogOut, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
-import useUpdateAvatar from "../hooks/useUpdateAvatar";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from "../hooks/useAuth";
-import useUpdateProfile from "../hooks/useUpdateProfile";
+import { useUpdateProfile, useUpdateAvatar } from "../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "../api/user";
 import { useAddAddress } from "../hooks/useAddress";
-import { current } from "@reduxjs/toolkit";
+import { useAuth } from "../hooks/useAuth";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [latestAddress, setLatestAddress] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: getCurrentUser, // change the types of current user add a type alias or the interface for currentUser
-  });
-  const currentUser = data?.currentUser;
-  const {
-    mutate: uploadAvatar,
-    isPending,
-    data: profileImage,
-  } = useUpdateAvatar();
+  const { data: currentUser } = useAuth();
+  const { mutate: uploadAvatar, data: profileImage } = useUpdateAvatar();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: logout, isPending: loggingOut } = useLogout();

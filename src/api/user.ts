@@ -3,7 +3,7 @@ import { User } from "../types/user";
 
 export const getCurrentUser = async (): Promise<User | null> => {
   const res = await api.get("/api/v1/user/me");
-  return res.data;
+  return res.data.currentUser;
 };
 
 export const updateProfile = async (data: any) => {

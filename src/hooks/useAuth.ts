@@ -26,13 +26,13 @@ export const useLogout = () => {
   return useMutation({ mutationFn: logout });
 };
 
-// Profile mutations
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateProfile,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] }),
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(["currentUser"], updatedUser);
+    },
   });
 };
 
@@ -40,7 +40,8 @@ export const useUpdateAvatar = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateAvatar,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
   });
 };
