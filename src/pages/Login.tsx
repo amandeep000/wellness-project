@@ -75,7 +75,7 @@ const Login = () => {
       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
       setIsSubmitted(true);
-      setTimeout(() => navigate("/account"), 1500);
+      setTimeout(() => navigate("/account/profile"), 1500);
     } catch (err: any) {
       console.error("Login error:", err);
 
