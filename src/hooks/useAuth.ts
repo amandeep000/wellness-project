@@ -11,6 +11,7 @@ export function useAuth() {
     staleTime: 7 * 60 * 1000,
   });
 }
+
 export const useLogin = () => {
   return useMutation({ mutationFn: login });
 };

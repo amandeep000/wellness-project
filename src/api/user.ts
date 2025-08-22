@@ -2,8 +2,15 @@ import api from "./axios";
 import { User } from "../types/user";
 
 export const getCurrentUser = async (): Promise<User | null> => {
-  const res = await api.get("/api/v1/user/me");
-  return res.data;
+  try {
+    const res = await api.get("/api/v1/user/me", { withCredentials: true });
+    return res.data;
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 export const updateProfile = async (data: any) => {
