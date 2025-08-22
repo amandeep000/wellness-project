@@ -19,7 +19,7 @@ const Profile = () => {
     queryKey: ["currentUser"],
     queryFn: getCurrentUser, // change the types of current user add a type alias or the interface for currentUser
   });
-  const currentUser = data?.currentUser;
+  const currentUser = data;
   const {
     mutate: uploadAvatar,
     isPending,
