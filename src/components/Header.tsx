@@ -109,7 +109,7 @@ const Header = () => {
               />
             </svg>
             {/* user icon */}
-            <Link to={"/account"}>
+            <Link to={"/account/profile"}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
