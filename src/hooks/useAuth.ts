@@ -6,7 +6,15 @@ import { User } from "../types/user";
 export function useAuth() {
   return useQuery<User | null>({
     queryKey: ["currentUser"],
-    queryFn: getCurrentUser,
+    queryFn: async () => {
+      try {
+        const user = await getCurrentUser();
+        return user;
+      } catch (err: any) {
+        if (err.response?.status === 401) return null;
+        throw err;
+      }
+    },
     retry: false,
     staleTime: 7 * 60 * 1000,
   });
