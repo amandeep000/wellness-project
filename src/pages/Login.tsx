@@ -71,7 +71,7 @@ const Login = () => {
     try {
       const userData = await loginMutation.mutateAsync(formData);
 
-      queryClient.setQueryData(["currentUser"], userData.currentUser);
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
       navigate("/account/profile", { replace: true });
     } catch (err: any) {
