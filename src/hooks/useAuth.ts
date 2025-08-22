@@ -3,7 +3,7 @@ import { getCurrentUser } from "../api/user";
 import { login, logout, signup } from "../api/auth";
 import { User } from "../types/user";
 
-export function useAuth() {
+export function useAuth({ enabled = true } = {}) {
   return useQuery<User | null>({
     queryKey: ["currentUser"],
     queryFn: async () => {
@@ -17,8 +17,10 @@ export function useAuth() {
     },
     retry: false,
     staleTime: 7 * 60 * 1000,
+    enabled, // conditionally skip if first-time visitor
   });
 }
+
 export const useLogin = () => {
   return useMutation({ mutationFn: login });
 };
