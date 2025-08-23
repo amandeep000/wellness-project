@@ -29,10 +29,12 @@ const Router = createBrowserRouter(
       <Route path="/productpage" element={<ProductPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/account" element={<ProtectedRoutes />}>
-        <Route index element={<Navigate to="profile" replace />} />
-        <Route path="profile" element={<Profile />} />
-      </Route>
+      <Route path="/profile" element={<Profile />} />
+
+      {/* <Route path="/account" element={<ProtectedRoutes />}> */}
+      {/* <Route index element={<Navigate to="profile" replace />} /> */}
+      {/* <Route path="profile" element={<Profile />} /> */}
+      {/* </Route> */}
     </Route>
   )
 );

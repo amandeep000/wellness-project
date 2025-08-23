@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLogin } from "../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, replace } from "react-router-dom";
 
 interface LoginData {
   email: string;
@@ -73,7 +73,7 @@ const Login = () => {
 
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
-      navigate("/account/profile", { replace: true });
+      navigate("/profile");
     } catch (err: any) {
       console.error("Login error:", err);
 

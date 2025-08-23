@@ -8,14 +8,7 @@ import { updateProfile, updateAvatar } from "../api/user";
 export function useAuth() {
   return useQuery<User | null>({
     queryKey: ["currentUser"],
-    queryFn: async () => {
-      try {
-        const user = await getCurrentUser();
-        return user;
-      } catch (error) {
-        return null;
-      }
-    },
+    queryFn: getCurrentUser,
     retry: false,
     staleTime: 7 * 60 * 1000,
   });
@@ -38,7 +31,7 @@ export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: updateProfile,
     onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["currentUser"], updatedUser);
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });
 };

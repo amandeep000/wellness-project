@@ -13,27 +13,36 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [latestAddress, setLatestAddress] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data: currentUser } = useAuth();
-  const { mutate: uploadAvatar, data: profileImage } = useUpdateAvatar();
+  const {
+    mutate: uploadAvatar,
+    data: profileImage,
+    isPending: avatarLoading,
+  } = useUpdateAvatar();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: logout, isPending: loggingOut } = useLogout();
   const { mutate: updateProfile, isPending: updating } = useUpdateProfile();
   const { mutate: addAddress, isPending: addingAddress } = useAddAddress();
+  const { data: currentUser, isLoading } = useAuth();
 
-  const handleUploadImage = () => {
-    fileInputRef.current?.click();
-  };
+  useEffect(() => {
+    if (!isLoading && !currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, isLoading, navigate]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     uploadAvatar(file);
   };
+
+  // logout
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
         queryClient.setQueryData(["currentUser"], null);
-        navigate("/login");
+        navigate("/");
       },
     });
   };
@@ -79,6 +88,13 @@ const Profile = () => {
       behavior: "smooth",
     });
   }, []);
+
+  if (isLoading) {
+    return <p className="text-center">Loading...</p>;
+  }
+  if (!currentUser) {
+    return null; // don’t render the profile at all while redirect is happening
+  }
   return (
     <div className=" min-h-screen bg-white text-black p-4">
       <div className="flex flex-col lg:flex-row mx-auto justify-center">
@@ -88,15 +104,13 @@ const Profile = () => {
           <div className="flex flex-col mb-8">
             <div className="relative w-[230px] h-[230px] rounded-full overflow-hidden border border-gray-300">
               <img
-                src={profileImage || "/logo/defaultprofileimage.jpg"}
+                src={currentUser.avatar || "/logo/defaultprofileimage.jpg"}
                 alt="Profile image"
                 className="object-cover w-full h-full"
               />
-              <label
-                onClick={handleUploadImage}
-                className="absolute bottom-0 left-0 w-full bg-black/60 text-white text-sm py-1 text-center cursor-pointer"
-              >
-                <Upload size={16} className="inline mr-1" /> Upload
+              <label className="absolute bottom-0 left-0 w-full bg-black/60 text-white text-sm py-1 text-center cursor-pointer">
+                <Upload size={16} className="inline mr-1" />{" "}
+                {avatarLoading ? "Uploading..." : "upload"}
                 <input
                   type="file"
                   className="hidden"
@@ -137,11 +151,8 @@ const Profile = () => {
               onClick={handleLogout}
               className="flex items-center gap-2 text-red-600 hover:text-red-800"
             >
-              <LogOut size={18} /> Logout
+              <LogOut size={18} /> {loggingOut ? "Logging You Out" : "Logout"}
             </button>
-            <p className="text-lg text-red-500 text-center w-full">
-              {loggingOut ? "Logging out" : ""}
-            </p>
           </nav>
         </aside>
 
@@ -154,7 +165,10 @@ const Profile = () => {
             <div>
               <div className="flex justify-between items-center">
                 <p className="font-medium">
-                  {currentUser?.fullname || "Guest User"}
+                  NAME:{" "}
+                  <span className="uppercase">
+                    {currentUser?.fullname || "Guest User"}
+                  </span>
                 </p>
                 <button
                   className="text-sm text-blue-600 hover:underline"
@@ -187,7 +201,7 @@ const Profile = () => {
             <div>
               <div className="flex justify-between items-center">
                 <p className="font-medium">
-                  {currentUser?.email || "aura@gmail.com"}
+                  EMAIL: <span>{currentUser?.email || "aura@gmail.com"}</span>
                 </p>
                 <button
                   className="text-sm text-blue-600 hover:underline"
@@ -218,7 +232,7 @@ const Profile = () => {
             </div>
             <div>
               <div className="flex justify-between items-center">
-                <p className="font-medium">Password: ••••••••</p>
+                <p className="font-medium">PASSWORD: ••••••••</p>
                 <button
                   className="text-sm text-blue-600 hover:underline"
                   onClick={() =>
@@ -302,12 +316,12 @@ const Profile = () => {
                   const formData = new FormData(e.currentTarget);
                   const newAddress = {
                     fullname: formData.get("fullname") as string,
-                    phone: formData.get("phone") as string,
+                    phoneNumber: formData.get("phoneNumber") as string,
                     street: formData.get("street") as string,
-                    landmark: formData.get("landmark") as string,
+                    type: formData.get("type") as string,
                     city: formData.get("city") as string,
                     state: formData.get("state") as string,
-                    zip: formData.get("zip") as string,
+                    postalCode: formData.get("postalCode") as string,
                     country: formData.get("country") as string,
                   };
                   addAddress(newAddress, {
@@ -325,7 +339,7 @@ const Profile = () => {
                   className="w-full border border-gray-300 p-2 rounded"
                 />
                 <input
-                  name="phone"
+                  name="phoneNumber"
                   type="text"
                   placeholder="Phone Number"
                   className="w-full border border-gray-300 p-2 rounded"
@@ -337,9 +351,9 @@ const Profile = () => {
                   className="w-full border border-gray-300 p-2 rounded"
                 />
                 <input
-                  name="landmark"
+                  name="type"
                   type="text"
-                  placeholder="Landmark (Optional)"
+                  placeholder="Home or Office"
                   className="w-full border border-gray-300 p-2 rounded"
                 />
                 <div className="grid grid-cols-2 gap-2">
@@ -358,7 +372,7 @@ const Profile = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <input
-                    name="zip"
+                    name="postalCode"
                     type="text"
                     placeholder="Zip Code"
                     className="w-full border border-gray-300 p-2 rounded"

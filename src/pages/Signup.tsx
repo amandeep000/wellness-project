@@ -92,7 +92,7 @@ const Signup: React.FC = () => {
           onSuccess: () => {
             setIsSubmitted(true);
             setTimeout(() => {
-              navigate("/account");
+              navigate("/login");
             }, 1500);
           },
           onError: (err: any) => {

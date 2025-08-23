@@ -8,7 +8,6 @@ import FeaturedOn from "../components/FeaturedOn";
 import HeroMissionVideo from "../components/HeroMissionVideo";
 import ReviewTemplate from "../components/ReviewTemplate";
 import HomeNewsletter from "../components/HomeNewsletter";
-import Profile from "./Profile";
 
 const Home = () => {
   return (
@@ -25,7 +24,6 @@ const Home = () => {
       <HeroMissionVideo />
       <ReviewTemplate />
       <HomeNewsletter />
-      <Profile />
     </main>
   );
 };
