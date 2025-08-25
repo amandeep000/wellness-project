@@ -35,6 +35,7 @@ export const updateAvatar = async (file: File) => {
 
 export const addAddress = async (data: any) => {
   const res = await api.post("/api/v1/addresses", data);
+  console.log("this is the addresses", res.data);
   return res.data;
 };
 
@@ -44,6 +45,21 @@ export const updateAddress = async (addressId: string, data: any) => {
 };
 
 export const deleteAddress = async (addressId: string) => {
-  const res = await api.delete(`/api/v1/addresses/${addressId}`);
-  return res.data;
+  try {
+    const res = await api.delete(`/api/v1/addresses/${addressId}`);
+    return res.data;
+  } catch (error: any) {
+    console.error("Delete address error:", error.response?.data);
+    throw error;
+  }
+};
+// export const deleteAddress = async (addressId: string) => {
+//   const res = await api.delete(`/api/v1/addresses/${addressId}`);
+//   return res.data;
+// };
+
+export const getAllAddresses = async () => {
+  const res = await api.get("/api/v1/addresses");
+  console.log("All addresses:", res.data);
+  return res.data.data;
 };

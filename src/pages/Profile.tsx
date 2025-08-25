@@ -6,28 +6,50 @@ import { useNavigate } from "react-router-dom";
 import { useLogout } from "../hooks/useAuth";
 import { useUpdateProfile, useUpdateAvatar } from "../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAddAddress } from "../hooks/useAddress";
+import {
+  useAddAddress,
+  useGetAddresses,
+  useUpdateAddress,
+  useDeleteAddress,
+} from "../hooks/useAddress";
+
 import { useAuth } from "../hooks/useAuth";
+
+interface Address {
+  _id: string;
+  type: string;
+  fullname: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phoneNumber: string;
+  isDefault: boolean;
+}
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
-  const [latestAddress, setLatestAddress] = useState<any>(null);
+  const [editingAddress, setEditingAddress] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const {
-    mutate: uploadAvatar,
-    data: profileImage,
-    isPending: avatarLoading,
-  } = useUpdateAvatar();
+  const { mutate: uploadAvatar, isPending: avatarLoading } = useUpdateAvatar();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: logout, isPending: loggingOut } = useLogout();
   const { mutate: updateProfile, isPending: updating } = useUpdateProfile();
   const { mutate: addAddress, isPending: addingAddress } = useAddAddress();
+  const { mutate: updateAddress, isPending: updatingAddress } =
+    useUpdateAddress();
+  const { mutate: deleteAddress, isPending: deletingAddress } =
+    useDeleteAddress();
+  const { data: addresses = [], isLoading: addressesLoading } =
+    useGetAddresses();
   const { data: currentUser, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && !currentUser) {
-      navigate("/login");
+    if (isLoading) return;
+    if (!currentUser) {
+      navigate("/login", { replace: true });
     }
   }, [currentUser, isLoading, navigate]);
 
@@ -81,6 +103,65 @@ const Profile = () => {
     );
   };
 
+  // Add Address
+  const handleAddAddress = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newAddress = {
+      type: formData.get("type") as string,
+      fullname: formData.get("fullname") as string,
+      street: formData.get("street") as string,
+      city: formData.get("city") as string,
+      state: formData.get("state") as string,
+      postalCode: formData.get("postalCode") as string,
+      country: formData.get("country") as string,
+      phoneNumber: formData.get("phoneNumber") as string,
+      isDefault: formData.get("isDefault") === "on",
+    };
+    console.log("Sending address data:", newAddress);
+    addAddress(newAddress, {
+      onSuccess: () => {
+        e.currentTarget.reset();
+      },
+    });
+  };
+
+  // Update Address
+  const handleUpdateAddress = (
+    e: React.FormEvent<HTMLFormElement>,
+    addressId: string
+  ) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const updatedAddress = {
+      type: formData.get("type") as string,
+      fullname: formData.get("fullname") as string,
+      street: formData.get("street") as string,
+      city: formData.get("city") as string,
+      state: formData.get("state") as string,
+      postalCode: formData.get("postalCode") as string,
+      country: formData.get("country") as string,
+      phoneNumber: formData.get("phoneNumber") as string,
+      isDefault: formData.get("isDefault") === "on",
+    };
+
+    updateAddress(
+      { addressId, addressData: updatedAddress },
+      {
+        onSuccess: () => {
+          setEditingAddress(null);
+        },
+      }
+    );
+  };
+
+  // Delete Address
+  const handleDeleteAddress = (addressId: string) => {
+    if (window.confirm("Are you sure you want to delete this address?")) {
+      deleteAddress(addressId);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -92,9 +173,11 @@ const Profile = () => {
   if (isLoading) {
     return <p className="text-center">Loading...</p>;
   }
+
   if (!currentUser) {
-    return null; // don’t render the profile at all while redirect is happening
+    return null;
   }
+
   return (
     <div className=" min-h-screen bg-white text-black p-4">
       <div className="flex flex-col lg:flex-row mx-auto justify-center">
@@ -104,7 +187,7 @@ const Profile = () => {
           <div className="flex flex-col mb-8">
             <div className="relative w-[230px] h-[230px] rounded-full overflow-hidden border border-gray-300">
               <img
-                src={currentUser.avatar || "/logo/defaultprofileimage.jpg"}
+                src={currentUser?.avatar || "/logo/defaultprofileimage.jpg"}
                 alt="Profile image"
                 className="object-cover w-full h-full"
               />
@@ -277,84 +360,215 @@ const Profile = () => {
           <section>
             <h2 className="text-xl font-semibold mb-4">Addresses</h2>
             <div className="space-y-4">
-              <div className="border border-gray-300 p-4 rounded flex justify-between items-start">
-                {latestAddress ? (
-                  <div>
-                    <p className="font-medium">
-                      {latestAddress.fullname || "Unknown Name"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {latestAddress.phone || "No phone provided"}
-                    </p>
-                    <p className="text-sm">
-                      {latestAddress.street || "No street info"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {latestAddress.country || "No country info"}
-                    </p>
+              {addressesLoading ? (
+                <p className="text-center">Loading addresses...</p>
+              ) : addresses.length > 0 ? (
+                addresses.map((address: Address) => (
+                  <div
+                    key={address._id}
+                    className="border border-gray-300 p-4 rounded"
+                  >
+                    {editingAddress === address._id ? (
+                      // Edit Form
+                      <form
+                        onSubmit={(e) => handleUpdateAddress(e, address._id)}
+                        className="space-y-2"
+                      >
+                        <select
+                          name="type"
+                          defaultValue={address.type}
+                          className="w-full border border-gray-300 p-2 rounded"
+                          required
+                        >
+                          <option value="">Select Type</option>
+                          <option value="billing">Billing</option>
+                          <option value="shipping">Shipping</option>
+                          <option value="both">Both</option>
+                        </select>
+                        <input
+                          name="fullname"
+                          type="text"
+                          defaultValue={address.fullname}
+                          placeholder="Full Name"
+                          className="w-full border border-gray-300 p-2 rounded"
+                          required
+                        />
+                        <input
+                          name="phoneNumber"
+                          type="text"
+                          defaultValue={address.phoneNumber}
+                          placeholder="Phone Number"
+                          className="w-full border border-gray-300 p-2 rounded"
+                          required
+                        />
+                        <input
+                          name="street"
+                          type="text"
+                          defaultValue={address.street}
+                          placeholder="Street / House No."
+                          className="w-full border border-gray-300 p-2 rounded"
+                          required
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            name="city"
+                            type="text"
+                            defaultValue={address.city}
+                            placeholder="City"
+                            className="w-full border border-gray-300 p-2 rounded"
+                            required
+                          />
+                          <input
+                            name="state"
+                            type="text"
+                            defaultValue={address.state}
+                            placeholder="State"
+                            className="w-full border border-gray-300 p-2 rounded"
+                            required
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            name="postalCode"
+                            type="text"
+                            defaultValue={address.postalCode}
+                            placeholder="Zip Code"
+                            className="w-full border border-gray-300 p-2 rounded"
+                            required
+                          />
+                          <input
+                            name="country"
+                            type="text"
+                            defaultValue={address.country}
+                            placeholder="Country"
+                            className="w-full border border-gray-300 p-2 rounded"
+                            required
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input
+                            name="isDefault"
+                            type="checkbox"
+                            defaultChecked={address.isDefault}
+                            className="w-4 h-4"
+                          />
+                          <label className="text-sm text-gray-600">
+                            Set as default address
+                          </label>
+                        </div>
+                        <div className="space-x-2">
+                          <button
+                            type="submit"
+                            className="px-4 py-1 bg-black text-white rounded"
+                            disabled={updatingAddress}
+                          >
+                            {updatingAddress ? "Updating..." : "Update"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditingAddress(null)}
+                            className="px-4 py-1 bg-gray-300 text-black rounded"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      // Display Address
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium">{address.fullname}</p>
+                            {address.isDefault && (
+                              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                                Default
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600 capitalize">
+                            {address.type} • {address.phoneNumber}
+                          </p>
+                          <p className="text-sm">{address.street}</p>
+                          <p className="text-sm text-gray-600">
+                            {address.city}, {address.state} {address.postalCode}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {address.country}
+                          </p>
+                        </div>
+                        <div className="space-x-2">
+                          <button
+                            onClick={() => setEditingAddress(address._id)}
+                            className="text-sm text-blue-600 hover:underline"
+                            disabled={updatingAddress}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteAddress(address._id)}
+                            className={`text-sm hover:underline ${
+                              addresses.length === 1
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "text-red-600"
+                            }`}
+                            disabled={deletingAddress || addresses.length === 1}
+                            title={
+                              addresses.length === 1
+                                ? "Cannot delete the only address"
+                                : ""
+                            }
+                          >
+                            {deletingAddress ? "Deleting..." : "Delete"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <p className="text-gray-500 italic">No address added yet.</p>
-                )}
-                {latestAddress && (
-                  <div className="space-x-2">
-                    <button className="text-sm text-blue-600 hover:underline">
-                      Edit
-                    </button>
-                    <button className="text-sm text-red-600 hover:underline">
-                      Delete
-                    </button>
-                  </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <div className="border border-gray-300 p-4 rounded">
+                  <p className="text-gray-500 italic">
+                    No addresses added yet.
+                  </p>
+                </div>
+              )}
 
               {/* Add New Address Form */}
               <form
                 className="space-y-2 border p-4 rounded"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const formData = new FormData(e.currentTarget);
-                  const newAddress = {
-                    fullname: formData.get("fullname") as string,
-                    phoneNumber: formData.get("phoneNumber") as string,
-                    street: formData.get("street") as string,
-                    type: formData.get("type") as string,
-                    city: formData.get("city") as string,
-                    state: formData.get("state") as string,
-                    postalCode: formData.get("postalCode") as string,
-                    country: formData.get("country") as string,
-                  };
-                  addAddress(newAddress, {
-                    onSuccess: (data) => {
-                      setLatestAddress(data);
-                      e.currentTarget.reset();
-                    },
-                  });
-                }}
+                onSubmit={handleAddAddress}
               >
+                <h3 className="font-medium mb-2">Add New Address</h3>
+                <select
+                  name="type"
+                  className="w-full border border-gray-300 p-2 rounded"
+                  required
+                >
+                  <option value="">Select Type</option>
+                  <option value="billing">Billing</option>
+                  <option value="shipping">shipping</option>
+                  <option value="both">Both</option>
+                </select>
                 <input
                   name="fullname"
                   type="text"
                   placeholder="Full Name"
                   className="w-full border border-gray-300 p-2 rounded"
+                  required
                 />
                 <input
                   name="phoneNumber"
                   type="text"
                   placeholder="Phone Number"
                   className="w-full border border-gray-300 p-2 rounded"
+                  required
                 />
                 <input
                   name="street"
                   type="text"
                   placeholder="Street / House No."
                   className="w-full border border-gray-300 p-2 rounded"
-                />
-                <input
-                  name="type"
-                  type="text"
-                  placeholder="Home or Office"
-                  className="w-full border border-gray-300 p-2 rounded"
+                  required
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input
@@ -362,12 +576,14 @@ const Profile = () => {
                     type="text"
                     placeholder="City"
                     className="w-full border border-gray-300 p-2 rounded"
+                    required
                   />
                   <input
                     name="state"
                     type="text"
                     placeholder="State"
                     className="w-full border border-gray-300 p-2 rounded"
+                    required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -376,16 +592,28 @@ const Profile = () => {
                     type="text"
                     placeholder="Zip Code"
                     className="w-full border border-gray-300 p-2 rounded"
+                    required
                   />
                   <input
                     name="country"
                     type="text"
                     placeholder="Country"
                     className="w-full border border-gray-300 p-2 rounded"
+                    required
                   />
                 </div>
-                <button className="px-4 py-1 bg-black text-white rounded">
-                  {addingAddress ? "saving" : "Add Address"}
+                <div className="flex items-center gap-2">
+                  <input name="isDefault" type="checkbox" className="w-4 h-4" />
+                  <label className="text-sm text-gray-600">
+                    Set as default address
+                  </label>
+                </div>
+                <button
+                  type="submit"
+                  className="px-4 py-1 bg-black text-white rounded"
+                  disabled={addingAddress}
+                >
+                  {addingAddress ? "Adding..." : "Add Address"}
                 </button>
               </form>
             </div>

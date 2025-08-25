@@ -1,16 +1,24 @@
-import { Navigate, Outlet } from "react-router-dom";
+// components/ProtectedRoute.tsx
+import React, { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
-const ProtectedRoutes = () => {
-  const { data: user, isLoading, error } = useAuth();
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error || !user) {
-    console.log("Redirecting to login due to:", error || "No user");
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const { data: currentUser, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <p className="text-center">Loading...</p>;
+  }
+
+  if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />;
+  return children;
 };
 
-export default ProtectedRoutes;
+export default ProtectedRoute;

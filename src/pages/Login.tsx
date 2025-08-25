@@ -73,7 +73,7 @@ const Login = () => {
 
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
-      navigate("/profile");
+      navigate("/Profile");
     } catch (err: any) {
       console.error("Login error:", err);
 
