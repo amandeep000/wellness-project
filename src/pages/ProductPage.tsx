@@ -4,48 +4,56 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/thumbs";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Plus, Minus } from "lucide-react";
 import ProductAccordion from "../components/ProductAccordion";
 import Ingredients from "../components/Ingredients";
 import ProductReviews from "../components/ProductReviews";
 import ReuseAccordion from "../components/ReuseAccordion";
 import FeatureBanner from "../components/FeatureBanner";
+import { useProductBySlug } from "../hooks/useProduct";
 
-const productData = {
-  product: {
-    name: "Boost Energy Capsules",
-    type: "boost energy",
-    description:
-      "Wellness ENERGY is your solution for steady energy, sharp focus, and mental clarity*. Packed with B Vitamins, Vitamin C, and natural caffeine from Green Tea, it keeps you energized and balanced all day.",
-    tags: ["green tea", "vitamin c", "energy", "focus", "mental clarity"],
-    price: 29.99,
-    color: "#00a352",
-    images: [
-      "/productsImage/product2.webp",
-      "/productsImage/stress-relief-image.webp",
-      "/productsImage/stress-relief-package-sec.webp",
-      "/productsImage/wellness-satisfaction-stress.webp",
-    ],
-  },
+type IngredientItems = {
+  title: string;
+  desc: string;
+};
 
-  productInfoSections: [
-    {
-      title: "Benefits",
-      description:
-        "Boost Energy Capsules are designed to enhance your mental clarity and provide lasting energy throughout the day. Natural caffeine and essential vitamins support productivity and focus without jitters.",
-    },
-    {
-      title: "How to Take Supplements",
-      description:
-        "Take two capsules daily with water, preferably in the morning or before periods of focus or physical activity. Do not exceed the recommended dosage.",
-    },
-    {
-      title: "Ingredients",
-      description:
-        "A powerful blend of natural and scientifically backed ingredients like Vitamin C, B-Vitamins, and Green Tea Extract helps deliver sustained energy and cognitive support.",
-    },
-  ],
+const ProductPage = () => {
+  const { slug } = useParams<{ slug: string }>();
+  console.log("this is the product card slug", slug);
+  const { data: product, isLoading, error } = useProductBySlug(slug || "");
+  const ingredientItems: IngredientItems[] =
+    product?.ingredients?.map((ingredient, index) => ({
+      title: ingredient,
+      desc:
+        product.ingredientsDescription?.[index] || "No Description available",
+    })) || [];
+
+  const [thumbSwiper, setThumbSwiper] = useState<any>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [numberOfProducts, setNumberOfProducts] = useState(1);
+  const totalSlides = product?.images.length;
+  const handleIncrement = () => {
+    if (numberOfProducts < (product?.stock ?? 0)) {
+      setNumberOfProducts((prev) => prev + 1);
+    }
+  };
+  const handleDecrement = () => {
+    if (numberOfProducts > 1) {
+      setNumberOfProducts((prev) => prev - 1);
+    }
+  };
+  const handleAddToCart = () => {
+    if (numberOfProducts > 0) {
+    }
+  };
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
 
   productType: [
     "/supplementType/energy-icon-1.avif",
@@ -55,95 +63,22 @@ const productData = {
     "/supplementType/men-icon-5.avif",
     "/supplementType/stress-icon-7.avif",
     "/supplementType/women-icon-8.avif",
-  ],
+  ];
+  if (isLoading)
+    return (
+      <div className="text-4xl text-center w-full">Loading Product...</div>
+    );
+  if (error || !product)
+    return (
+      <div className="text-4xl text-red-400 text-center">Product Not Found</div>
+    );
 
-  ingredients: [
-    {
-      name: "Vitamin C",
-      description:
-        "A potent antioxidant that helps protect cells from oxidative stress and supports immune function.",
-    },
-    {
-      name: "Green Tea Extract",
-      description:
-        "Natural source of caffeine and L-theanine to promote energy and mental clarity without crashes.",
-    },
-    {
-      name: "Vitamin B12",
-      description:
-        "Supports energy metabolism and helps reduce feelings of tiredness and fatigue.",
-    },
-    {
-      name: "Vitamin B6",
-      description:
-        "Essential for brain development and function, helps in producing neurotransmitters.",
-    },
-    {
-      name: "L-Theanine",
-      description:
-        "An amino acid found in tea leaves that promotes calm and focused energy, balancing caffeine effects.",
-    },
-    {
-      name: "Rhodiola Rosea",
-      description:
-        "An adaptogen that may help reduce fatigue and support endurance during physical and mental stress.",
-    },
-  ],
-};
-const IngredientItems = [
-  {
-    title: "Vitamin C",
-    desc: "We carefully evaluate every ingredient, ensuring they are non-GMO.",
-  },
-  {
-    title: "Vitamin E",
-    desc: "We're dedicated to using scientifically backed, high-quality natural ingredients.",
-  },
-  {
-    title: "Hydrolysed Collagen",
-    desc: "Our formulations are crafted to maximize potency and absorption.",
-  },
-  {
-    title: "Iron",
-    desc: "We hold ourselves and our ingredients to the highest standards.",
-  },
-  {
-    title: "Zinc",
-    desc: "We ensure the highest standards with 100% vegan, cruelty-free formulations.",
-  },
-  {
-    title: "Vitamin A",
-    desc: "We guarantee the highest purity, ensuring our products are free from heavy metals.",
-  },
-];
-
-const ProductPage = () => {
-  const [thumbSwiper, setThumbSwiper] = useState<any>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [numberOfProducts, setNumberOfProducts] = useState(0);
-  const totalSlides = productData.product.images.length;
-  const handleIncrement = () => {
-    setNumberOfProducts((prev) => prev + 1);
-  };
-  const handleDecrement = () => {
-    if (numberOfProducts > 0) {
-      setNumberOfProducts((prev) => prev - 1);
-    }
-  };
-  const handleAddToCart = () => {};
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
-  }, []);
   return (
     <section className={`w-full `}>
       {/* container div */}
       <div
         className="w-full px-4 pt-5 pb-8 lg:px-8"
-        style={{ backgroundColor: productData.product.color }}
+        style={{ backgroundColor: product.bgColor }}
       >
         {/* product section */}
         <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-16 xl:gap-20 sticky">
@@ -162,14 +97,14 @@ const ProductPage = () => {
                   modules={[FreeMode, Thumbs]}
                   className="h-full"
                 >
-                  {productData.product.images.map((img, i) => (
+                  {product.images.map((img, i) => (
                     <SwiperSlide
                       key={i}
                       className={`cursor-pointer !w-[80px] !h-[80px] !rounded-lg ${activeIndex === i ? "border-white border-2" : " border-none"}`}
                     >
                       <img
                         src={img}
-                        alt={productData.product.name}
+                        alt={product.name}
                         className="object-cover w-full h-full rounded-lg"
                       />
                     </SwiperSlide>
@@ -185,13 +120,13 @@ const ProductPage = () => {
                   onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
                   className="rounded-lg"
                 >
-                  {productData.product.images.map((img, index) => (
+                  {product.images.map((img, index) => (
                     <SwiperSlide key={index} className="">
                       <Link to={"#"}>
                         {" "}
                         <img
                           src={img}
-                          alt={productData.product.name}
+                          alt={product.name}
                           className="object-cover w-full h-full"
                         />
                       </Link>
@@ -200,7 +135,7 @@ const ProductPage = () => {
                 </Swiper>
                 <p
                   className={`absolute bottom-2 left-2 text-sm text-white border-white border-[1px] py-2 px-2 rounded-lg z-10 lg:hidden`}
-                  style={{ background: productData.product.color }}
+                  style={{ background: product.bgColor }}
                 >
                   {activeIndex + 1} / {totalSlides}
                 </p>
@@ -223,13 +158,13 @@ const ProductPage = () => {
                 Plant based
               </span>
               <h1 className="text-text-light text-[25.3px] font-bold uppercase lg:text-5xl lg:my-2">
-                {productData.product.name}
+                {product.name}
               </h1>
             </div>
             {/* tags */}
             <div className="w-full my-2">
               <ul className="w-full flex gap-2">
-                {productData.product.tags.map((tag, i) => (
+                {product.tags.map((tag, i) => (
                   <li
                     key={i}
                     className="border-white border text-text-light text-xs px-1.5 py-1 rounded-xl flex justify-center items-center capitalize"
@@ -241,16 +176,16 @@ const ProductPage = () => {
             </div>
             {/* product description */}
             <div className="w-full text-text-light pt-2 pb-4">
-              <p>{productData.product.description}</p>
+              <p>{product.description}</p>
             </div>
             {/* product filter links */}
             <div className="full pt-1.5 pb-2.5">
               <span className="text-text-light text-sm capitalize">
-                choose supplement: <strong>{productData.product.type}</strong>
+                choose supplement: <strong>{product?.category.name}</strong>
               </span>
               <div className="h-full">
                 <ul className="w-full flex items-center gap-3 mt-1">
-                  {productData.productType.map((item, index) => (
+                  {product.tags.map((item, index) => (
                     <li key={index}>
                       <Link to={"#"}>
                         <img
@@ -267,7 +202,7 @@ const ProductPage = () => {
             {/* price */}
             <div className="w-full flex flex-col">
               <span className="text-[22.4px] font-bold text-text-default">
-                ${productData.product.price}
+                ${product.price}
               </span>
 
               <span className="text-[10px] capitalize text-text-default">
@@ -280,7 +215,7 @@ const ProductPage = () => {
                 {/* Decrement */}
                 <button
                   onClick={handleDecrement}
-                  className="py-2 px-3 text-white"
+                  className="py-2 px-3 text-white cursor-pointer"
                 >
                   <Minus className="w-5 h-5" />
                 </button>
@@ -293,7 +228,7 @@ const ProductPage = () => {
                 {/* Increment */}
                 <button
                   onClick={handleIncrement}
-                  className="py-2 px-3 text-white"
+                  className="py-2 px-3 text-white cursor-pointer"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -310,10 +245,7 @@ const ProductPage = () => {
               </div>
             </div>
             {/* happy customers */}
-            <div
-              className="w-full"
-              style={{ background: productData.product.color }}
-            >
+            <div className="w-full" style={{ background: product.bgColor }}>
               <p className="capitalize text-center w-full backdrop:blur-3xl bg-black/10 rounded-lg p-2">
                 +10000 happy customers | free shiping across india
               </p>
@@ -326,7 +258,7 @@ const ProductPage = () => {
       </div>
       {/* ingredients */}
       <div className="w-full">
-        <Ingredients items={IngredientItems} />
+        <Ingredients items={ingredientItems} />
       </div>
       {/* reviews*/}
       <div className="w-full">
@@ -355,3 +287,108 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+
+// const productData = {
+//   product: {
+//     name: "Boost Energy Capsules",
+//     type: "boost energy",
+//     description:
+//       "Wellness ENERGY is your solution for steady energy, sharp focus, and mental clarity*. Packed with B Vitamins, Vitamin C, and natural caffeine from Green Tea, it keeps you energized and balanced all day.",
+//     tags: ["green tea", "vitamin c", "energy", "focus", "mental clarity"],
+//     price: 29.99,
+//     color: "#00a352",
+//     images: [
+//       "/productsImage/product2.webp",
+//       "/productsImage/stress-relief-image.webp",
+//       "/productsImage/stress-relief-package-sec.webp",
+//       "/productsImage/wellness-satisfaction-stress.webp",
+//     ],
+//   },
+
+//   productInfoSections: [
+//     {
+//       title: "Benefits",
+//       description:
+//         "Boost Energy Capsules are designed to enhance your mental clarity and provide lasting energy throughout the day. Natural caffeine and essential vitamins support productivity and focus without jitters.",
+//     },
+//     {
+//       title: "How to Take Supplements",
+//       description:
+//         "Take two capsules daily with water, preferably in the morning or before periods of focus or physical activity. Do not exceed the recommended dosage.",
+//     },
+//     {
+//       title: "Ingredients",
+//       description:
+//         "A powerful blend of natural and scientifically backed ingredients like Vitamin C, B-Vitamins, and Green Tea Extract helps deliver sustained energy and cognitive support.",
+//     },
+//   ],
+
+//   productType: [
+//     "/supplementType/energy-icon-1.avif",
+//     "/supplementType/collagen-icon-2.avif",
+//     "/supplementType/hair-icon-3.avif",
+//     "/supplementType/immunity-icon-4.avif",
+//     "/supplementType/men-icon-5.avif",
+//     "/supplementType/stress-icon-7.avif",
+//     "/supplementType/women-icon-8.avif",
+//   ],
+
+//   ingredients: [
+//     {
+//       name: "Vitamin C",
+//       description:
+//         "A potent antioxidant that helps protect cells from oxidative stress and supports immune function.",
+//     },
+//     {
+//       name: "Green Tea Extract",
+//       description:
+//         "Natural source of caffeine and L-theanine to promote energy and mental clarity without crashes.",
+//     },
+//     {
+//       name: "Vitamin B12",
+//       description:
+//         "Supports energy metabolism and helps reduce feelings of tiredness and fatigue.",
+//     },
+//     {
+//       name: "Vitamin B6",
+//       description:
+//         "Essential for brain development and function, helps in producing neurotransmitters.",
+//     },
+//     {
+//       name: "L-Theanine",
+//       description:
+//         "An amino acid found in tea leaves that promotes calm and focused energy, balancing caffeine effects.",
+//     },
+//     {
+//       name: "Rhodiola Rosea",
+//       description:
+//         "An adaptogen that may help reduce fatigue and support endurance during physical and mental stress.",
+//     },
+//   ],
+// };
+// const IngredientItems = [
+//   {
+//     title: "Vitamin C",
+//     desc: "We carefully evaluate every ingredient, ensuring they are non-GMO.",
+//   },
+//   {
+//     title: "Vitamin E",
+//     desc: "We're dedicated to using scientifically backed, high-quality natural ingredients.",
+//   },
+//   {
+//     title: "Hydrolysed Collagen",
+//     desc: "Our formulations are crafted to maximize potency and absorption.",
+//   },
+//   {
+//     title: "Iron",
+//     desc: "We hold ourselves and our ingredients to the highest standards.",
+//   },
+//   {
+//     title: "Zinc",
+//     desc: "We ensure the highest standards with 100% vegan, cruelty-free formulations.",
+//   },
+//   {
+//     title: "Vitamin A",
+//     desc: "We guarantee the highest purity, ensuring our products are free from heavy metals.",
+//   },
+// ];

@@ -8,32 +8,32 @@ const ShopHover = () => {
     {
       image: "/productsImage/wellness-explore-banner.webp",
       title: "View All Products",
-      slug: "/shop",
+      categorySlug: "shopall",
     },
     {
       image: "/productsImage/product1.webp",
-      title: "women's multi capsule",
-      slug: "",
+      title: "Supplements",
+      categorySlug: "supplements",
     },
     {
-      image: "/productsImage/product2.webp",
-      title: "immunity boost capsules",
-      slug: "",
+      image: "/filters/skincare.webp",
+      title: "Skin Care",
+      categorySlug: "skincare",
     },
     {
-      image: "/productsImage/product1.webp",
-      title: "Natural collagen capsules",
-      slug: "",
+      image: "/filters/haircare.webp",
+      title: "Hair & Nail Care",
+      categorySlug: "haircare",
     },
     {
-      image: "/productsImage/product2.webp",
-      title: "Boost energy capsules",
-      slug: "",
+      image: "/filters/immunity.webp",
+      title: "Immunity",
+      categorySlug: "immunity",
     },
     {
-      image: "/productsImage/product2.webp",
-      title: "men's multi capsules",
-      slug: "",
+      image: "/filters/stressRelief.webp",
+      title: "Stress Relief",
+      categorySlug: "immunity",
     },
   ];
   const handleShopHoverClick = () => {
@@ -58,7 +58,10 @@ const ShopHover = () => {
         <ul className="flex flex-row justify-center items-center gap-3">
           {listData.map((item) => (
             <li key={item.title} className="w-full">
-              <Link to={item.slug} onClick={handleShopHoverClick}>
+              <Link
+                to={`/shop/${item.categorySlug}`}
+                onClick={handleShopHoverClick}
+              >
                 <div className="flex flex-col justify-center items-center w-full">
                   <img
                     src={item.image}

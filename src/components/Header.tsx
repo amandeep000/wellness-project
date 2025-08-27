@@ -58,7 +58,7 @@ const Header = () => {
                 onMouseEnter={() => dispatch(openShopDropdown())}
                 className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default flex justify-center items-center gap-x-[2px]"
               >
-                <Link to={"/shop"}>shop</Link>
+                <Link to={"/"}>shop</Link>
                 <span className="hover:rotate-y-180">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

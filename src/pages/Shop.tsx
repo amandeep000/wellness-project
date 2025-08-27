@@ -4,61 +4,27 @@ import BoostEnergy from "../components/BoostEnergy";
 import FeatureBanner from "../components/FeatureBanner";
 import HomeNewsletter from "../components/HomeNewsletter";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useProducts, useproductByCategory } from "../hooks/useProduct";
 
-const allProducts = [
-  {
-    slug: "",
-    title: "Men's Multi vitamin",
-    price: 48.0,
-    image: "/productsImage/product1.webp",
-    hoverImage: "/productsImage/product1_1.webp",
-  },
-  {
-    slug: "",
-    title: "Men's Multi vitamin",
-    price: 48.0,
-    image: "/productsImage/product1.webp",
-    hoverImage: "/productsImage/product1_1.webp",
-  },
-  {
-    slug: "",
-    title: "Men's Multi vitamin",
-    price: 48.0,
-    image: "/productsImage/product1.webp",
-    hoverImage: "/productsImage/product1_1.webp",
-  },
-  {
-    slug: "",
-    title: "Men's Multi vitamin",
-    price: 48.0,
-    image: "/productsImage/product1.webp",
-    hoverImage: "/productsImage/product1_1.webp",
-  },
-  {
-    slug: "",
-    title: "Men's Multi vitamin",
-    price: 48.0,
-    image: "/productsImage/product1.webp",
-    hoverImage: "/productsImage/product1_1.webp",
-  },
-  {
-    slug: "",
-    title: "Men's Multi vitamin",
-    price: 48.0,
-    image: "/productsImage/product1.webp",
-    hoverImage: "/productsImage/product1_1.webp",
-  },
-  {
-    slug: "",
-    title: "Men's Multi vitamin",
-    price: 48.0,
-    image: "/productsImage/product1.webp",
-    hoverImage: "/productsImage/product1_1.webp",
-  },
-];
+type ProductProps = {
+  slug: string;
+  name: string;
+  price?: number;
+  image: string;
+  hoverImage?: string;
+};
 
 const Shop = () => {
+  const { categorySlug } = useParams<{ categorySlug: string }>();
+  const productsQuery =
+    categorySlug === "shopall"
+      ? useProducts()
+      : useproductByCategory(categorySlug || "");
+  const { data: products, isLoading, error } = productsQuery;
+
   const handleAddToCart = () => {};
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -66,6 +32,26 @@ const Shop = () => {
       behavior: "smooth",
     });
   }, []);
+
+  if (isLoading)
+    return <div className="text-center p-8">Loading products...</div>;
+
+  if (error)
+    return (
+      <div className="text-center p-8 text-red-500">
+        Failed to load products
+      </div>
+    );
+
+  const productsForCards: ProductProps[] =
+    products?.map((prod) => ({
+      slug: prod.slug,
+      name: prod.name,
+      price: prod.price,
+      image: prod.images[0],
+      hoverImage: prod.images.length > 1 ? prod.images[1] : undefined,
+    })) || [];
+
   return (
     <section className="w-full">
       <div className="w-full relative">
@@ -125,14 +111,14 @@ const Shop = () => {
       {/* all products */}
       <div className="w-full pb-5 border-black border-b">
         <div className="w-full text-center border-black/35 border-b pb-6 flex flex-col">
-          <span className="capitalize text-text-default text-sm font-semibold mb-3">{`${allProducts.length} products`}</span>
+          <span className="capitalize text-text-default text-sm font-semibold mb-3">{`${products?.length ?? 0} products`}</span>
           <span className="font-bold text-center text-text-default uppercase">
             all products
           </span>
         </div>
         {/* products */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5 lg:px-8 px-4">
-          {allProducts.map((product, i) => (
+          {productsForCards?.map((product, i) => (
             <div key={i} className="px-4 w-full">
               <ProductCard product={product} onAddToCart={handleAddToCart} />
             </div>
