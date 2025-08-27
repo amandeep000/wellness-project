@@ -86,7 +86,7 @@ const Header = () => {
                 <Link to={"/faq"}>Faq</Link>
               </li>
               <li className="mx-3 text-sm font-semibold relative nav-hover cursor-pointer uppercase text-text-default">
-                <Link to={"/productpage"}>contact</Link>
+                <Link to={"/contact"}>contact</Link>
               </li>
             </ul>
           </nav>

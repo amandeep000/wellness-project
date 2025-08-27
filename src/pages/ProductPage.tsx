@@ -12,6 +12,7 @@ import ProductReviews from "../components/ProductReviews";
 import ReuseAccordion from "../components/ReuseAccordion";
 import FeatureBanner from "../components/FeatureBanner";
 import { useProductBySlug } from "../hooks/useProduct";
+import HomeNewsletter from "../components/HomeNewsletter";
 
 type IngredientItems = {
   title: string;
@@ -282,113 +283,11 @@ const ProductPage = () => {
       <div className="w-full pt-6">
         <FeatureBanner />
       </div>
+      <div className="w-full">
+        <HomeNewsletter />
+      </div>
     </section>
   );
 };
 
 export default ProductPage;
-
-// const productData = {
-//   product: {
-//     name: "Boost Energy Capsules",
-//     type: "boost energy",
-//     description:
-//       "Wellness ENERGY is your solution for steady energy, sharp focus, and mental clarity*. Packed with B Vitamins, Vitamin C, and natural caffeine from Green Tea, it keeps you energized and balanced all day.",
-//     tags: ["green tea", "vitamin c", "energy", "focus", "mental clarity"],
-//     price: 29.99,
-//     color: "#00a352",
-//     images: [
-//       "/productsImage/product2.webp",
-//       "/productsImage/stress-relief-image.webp",
-//       "/productsImage/stress-relief-package-sec.webp",
-//       "/productsImage/wellness-satisfaction-stress.webp",
-//     ],
-//   },
-
-//   productInfoSections: [
-//     {
-//       title: "Benefits",
-//       description:
-//         "Boost Energy Capsules are designed to enhance your mental clarity and provide lasting energy throughout the day. Natural caffeine and essential vitamins support productivity and focus without jitters.",
-//     },
-//     {
-//       title: "How to Take Supplements",
-//       description:
-//         "Take two capsules daily with water, preferably in the morning or before periods of focus or physical activity. Do not exceed the recommended dosage.",
-//     },
-//     {
-//       title: "Ingredients",
-//       description:
-//         "A powerful blend of natural and scientifically backed ingredients like Vitamin C, B-Vitamins, and Green Tea Extract helps deliver sustained energy and cognitive support.",
-//     },
-//   ],
-
-//   productType: [
-//     "/supplementType/energy-icon-1.avif",
-//     "/supplementType/collagen-icon-2.avif",
-//     "/supplementType/hair-icon-3.avif",
-//     "/supplementType/immunity-icon-4.avif",
-//     "/supplementType/men-icon-5.avif",
-//     "/supplementType/stress-icon-7.avif",
-//     "/supplementType/women-icon-8.avif",
-//   ],
-
-//   ingredients: [
-//     {
-//       name: "Vitamin C",
-//       description:
-//         "A potent antioxidant that helps protect cells from oxidative stress and supports immune function.",
-//     },
-//     {
-//       name: "Green Tea Extract",
-//       description:
-//         "Natural source of caffeine and L-theanine to promote energy and mental clarity without crashes.",
-//     },
-//     {
-//       name: "Vitamin B12",
-//       description:
-//         "Supports energy metabolism and helps reduce feelings of tiredness and fatigue.",
-//     },
-//     {
-//       name: "Vitamin B6",
-//       description:
-//         "Essential for brain development and function, helps in producing neurotransmitters.",
-//     },
-//     {
-//       name: "L-Theanine",
-//       description:
-//         "An amino acid found in tea leaves that promotes calm and focused energy, balancing caffeine effects.",
-//     },
-//     {
-//       name: "Rhodiola Rosea",
-//       description:
-//         "An adaptogen that may help reduce fatigue and support endurance during physical and mental stress.",
-//     },
-//   ],
-// };
-// const IngredientItems = [
-//   {
-//     title: "Vitamin C",
-//     desc: "We carefully evaluate every ingredient, ensuring they are non-GMO.",
-//   },
-//   {
-//     title: "Vitamin E",
-//     desc: "We're dedicated to using scientifically backed, high-quality natural ingredients.",
-//   },
-//   {
-//     title: "Hydrolysed Collagen",
-//     desc: "Our formulations are crafted to maximize potency and absorption.",
-//   },
-//   {
-//     title: "Iron",
-//     desc: "We hold ourselves and our ingredients to the highest standards.",
-//   },
-//   {
-//     title: "Zinc",
-//     desc: "We ensure the highest standards with 100% vegan, cruelty-free formulations.",
-//   },
-//   {
-//     title: "Vitamin A",
-//     desc: "We guarantee the highest purity, ensuring our products are free from heavy metals.",
-//   },
-// ];
