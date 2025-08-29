@@ -1,7 +1,7 @@
 import React from "react";
 
-const CartSlider = () => {
+const Checkout = () => {
   return <div></div>;
 };
 
-export default CartSlider;
+export default Checkout;

@@ -1,10 +1,17 @@
+import { useCart } from "../hooks/useCart";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 type ProductProps = {
+  id?: string;
+  _id?: string;
   slug: string;
   name: string;
   price?: number;
+  stock?: number;
   image: string;
   hoverImage?: string;
+  bgColor?: string;
+  images?: string[];
 };
 interface ProductCardProps {
   product: ProductProps;
@@ -12,6 +19,41 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
+  const { addProductToCart, isItemInCart, getItemQuantity } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+  const completeProduct = {
+    ...product,
+    id: product._id || product.id || product.slug,
+    _id: product._id || product.id || product.slug,
+    price: product.price || 0,
+    stock: product.stock || 100,
+    images: product.images || [product.image],
+    bgColor: product.bgColor || "#FFFFFF",
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!completeProduct.price) {
+      console.warn("cannot add product without price");
+      return;
+    }
+
+    setIsAdding(true);
+    try {
+      addProductToCart(completeProduct, 1);
+      setTimeout(() => {
+        setIsAdding(false);
+      }, 1000);
+    } catch (error) {
+      console.error("failed to add to cart: ", error);
+      setIsAdding(false);
+    }
+  };
+  const productId = completeProduct.id;
+  const itemInCart = isItemInCart(productId);
+  const cartQuantity = getItemQuantity(productId);
   return (
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md 2xl:max-w-full flex flex-col mx-auto">
       <Link
@@ -32,7 +74,8 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         )}
         {onAddToCart && (
           <button
-            onClick={() => onAddToCart(product)}
+            onClick={handleAddToCart}
+            disabled={isAdding || !product.price}
             className="absolute hidden lg:block bottom-0 translate-y-[40px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-in-out w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none px-4 cursor-pointer"
           >
             Add To Cart
@@ -56,7 +99,8 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
 
       {onAddToCart && (
         <button
-          onClick={() => onAddToCart(product)}
+          onClick={handleAddToCart}
+          disabled={isAdding || !product.price}
           className="px-4 w-full border border-foreground text-center rounded-lg bg-background py-2 text-sm hover:bg-text-default hover:text-text-light hover:border-none transition-all duration-300 ease-in-out lg:hidden"
         >
           Add To Cart

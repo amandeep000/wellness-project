@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import headerReducer from "./slices/HeaderSlice";
-import counterSlice from "./slices/counter";
+import cartReducer from "./slices/cartSlice";
 export const store = configureStore({
   reducer: {
     header: headerReducer,
-    counter: counterSlice,
+    cart: cartReducer,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

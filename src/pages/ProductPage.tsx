@@ -13,6 +13,7 @@ import ReuseAccordion from "../components/ReuseAccordion";
 import FeatureBanner from "../components/FeatureBanner";
 import { useProductBySlug } from "../hooks/useProduct";
 import HomeNewsletter from "../components/HomeNewsletter";
+import { useCart } from "../hooks/useCart";
 
 type IngredientItems = {
   title: string;
@@ -21,7 +22,7 @@ type IngredientItems = {
 
 const ProductPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  console.log("this is the product card slug", slug);
+  const { addProductToCart } = useCart();
   const { data: product, isLoading, error } = useProductBySlug(slug || "");
   const ingredientItems: IngredientItems[] =
     product?.ingredients?.map((ingredient, index) => ({
@@ -34,6 +35,26 @@ const ProductPage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [numberOfProducts, setNumberOfProducts] = useState(1);
   const totalSlides = product?.images.length;
+
+  const handleAddToCart = () => {
+    if (numberOfProducts > 0 && product) {
+      // Create cart-compatible product object
+      const cartProduct = {
+        ...product,
+        id: product._id || product.id || product.slug,
+        _id: product._id || product.id || product.slug,
+        price: product.price,
+        stock: product.stock,
+        images: product.images,
+        bgColor: product.bgColor,
+      };
+      addProductToCart(cartProduct, numberOfProducts);
+
+      // Reset quantity to 1 after adding
+      setNumberOfProducts(1);
+    }
+  };
+
   const handleIncrement = () => {
     if (numberOfProducts < (product?.stock ?? 0)) {
       setNumberOfProducts((prev) => prev + 1);
@@ -42,10 +63,6 @@ const ProductPage = () => {
   const handleDecrement = () => {
     if (numberOfProducts > 1) {
       setNumberOfProducts((prev) => prev - 1);
-    }
-  };
-  const handleAddToCart = () => {
-    if (numberOfProducts > 0) {
     }
   };
   useEffect(() => {

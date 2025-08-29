@@ -1,5 +1,5 @@
 import Header from "./Header";
-import CartSlider from "./CartSlider";
+import Cart from "./Cart";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Overlay from "./Overlay";
@@ -10,7 +10,7 @@ const Layout = () => {
     <div>
       <Header />
       <Overlay />
-      <CartSlider />
+      <Cart />
       <ScrollLock />
       <main>
         <Outlet />

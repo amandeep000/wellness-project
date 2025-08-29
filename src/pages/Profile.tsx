@@ -44,10 +44,10 @@ const Profile = () => {
     useDeleteAddress();
   const { data: addresses = [], isLoading: addressesLoading } =
     useGetAddresses();
-  const { data: currentUser, isLoading } = useAuth();
+  const { data: currentUser, isLoading, isFetching } = useAuth();
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || isFetching) return;
     if (!currentUser) {
       navigate("/login", { replace: true });
     }

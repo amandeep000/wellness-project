@@ -3,7 +3,6 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-import { Navigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import Home from "../pages/Home";
 import Contact from "../pages/Contact";
@@ -15,7 +14,7 @@ import ProductPage from "../pages/ProductPage";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Profile from "../pages/Profile";
-import ProtectedRoutes from "./protectedRoutes";
+import Checkout from "../pages/Checkout";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,14 +29,7 @@ const Router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/profile" element={<Profile />} />
-      {/* <Route
-        path="/profile"
-        element={
-          <ProtectedRoutes>
-            <Profile />
-          </ProtectedRoutes>
-        }
-      ></Route> */}
+      <Route path="/checkout" element={<Checkout />} />
     </Route>
   )
 );
