@@ -66,7 +66,7 @@ const Footer = () => {
               about developer
             </div>
             <p className="mb-2">
-              Greetings! I'm Aman Deep Singh, a passionate Frontend Web
+              Greetings! I'm Aman Deep Singh, a passionate Fullstack (MERN) Web
               Developer hailing from the picturesque city of Shimla, Himachal
               Pradesh. Each morning, I start my day with a refreshing cup of
               green tea, and then I dive into the digital realm, crafting
@@ -86,7 +86,7 @@ const Footer = () => {
         <div className="text-xs md:text-sm border-white/20 border-b py-4 mb-6 flex flex-wrap justify-between items-center gap-2">
           <span>Terms & Conditions</span>
           <span>Privacy & Cookie</span>
-          <span>Made with ❤️ and lines of code by Aman(AuraWolf)</span>
+          <span>✨ Built with love by AuraWolf ✨</span>
         </div>
 
         {/* Logo */}

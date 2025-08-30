@@ -85,7 +85,7 @@ const Contact = () => {
 
           <button
             type="submit"
-            className="bg-black text-white px-6 py-2 rounded-lg uppercase tracking-wider"
+            className="bg-black text-white px-6 py-2 rounded-lg uppercase tracking-wider cursor-pointer"
           >
             Send a form
           </button>

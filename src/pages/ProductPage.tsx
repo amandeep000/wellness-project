@@ -256,7 +256,7 @@ const ProductPage = () => {
                 {" "}
                 <button
                   onClick={handleAddToCart}
-                  className="w-full text-xs py-4 px-6 text-center rounded-lg bg-black tracking-wider text-white font-bold uppercase"
+                  className="w-full text-xs py-4 px-6 text-center cursor-pointer rounded-lg bg-black tracking-wider text-white font-bold uppercase"
                 >
                   Add To Cart
                 </button>

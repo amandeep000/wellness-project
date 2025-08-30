@@ -1,4 +1,5 @@
-import { useCallback, useEffect } from "react";
+// hooks/useCart.ts
+import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./TypedHooks";
 import {
   addToCart,
@@ -9,7 +10,6 @@ import {
   clearCart,
   openCart,
   closeCart,
-  calculateTotals,
   loadCart,
 } from "../store/slices/cartSlice";
 import {
@@ -18,10 +18,8 @@ import {
   selectCartTotalAmount,
   selectCartTotalItems,
 } from "../store/selectors/cartSelectors";
-import { CartItem } from "../types/cart";
-import { Product } from "../types/product";
 import { useAuth } from "./useAuth";
-import Cart from "@/components/Cart";
+import { cartApi } from "../api/cart";
 
 export interface CartProductInput {
   id?: string;
@@ -37,13 +35,40 @@ export interface CartProductInput {
 
 export const useCart = () => {
   const dispatch = useAppDispatch();
-  const { data: currentUser } = useAuth();
   const items = useAppSelector(selectCartItems);
   const totalItems = useAppSelector(selectCartTotalItems);
   const totalAmount = useAppSelector(selectCartTotalAmount);
   const isCartOpen = useAppSelector(selectCartIsOpen);
 
-  // Load cart from localStorage
+  const { data: currentUser } = useAuth();
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Load cart from backend when user logs in
+  useEffect(() => {
+    if (currentUser) {
+      if (items.length > 0) {
+        // If user has local items, sync them with backend first
+        syncCartWithBackend().catch(() => {
+          // If sync fails, just load backend cart
+          loadCartFromBackend();
+        });
+      } else {
+        // Load cart from backend if no local items
+        loadCartFromBackend();
+      }
+    }
+  }, [currentUser]);
+
+  // Save to localStorage whenever cart changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("wellness-cart", JSON.stringify(items));
+    } catch (error) {
+      console.error("Failed to save cart to localStorage", error);
+    }
+  }, [items]);
+
+  // Load cart from localStorage on initial load
   useEffect(() => {
     const loadCartFromStorage = () => {
       try {
@@ -61,51 +86,29 @@ export const useCart = () => {
     };
 
     loadCartFromStorage();
-  }, []);
+  }, [dispatch]);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem("wellness-cart", JSON.stringify(items));
-    } catch (error) {
-      console.error("Failed to save cart to localStorage", error);
-    }
-  }, [items]);
-
-  // cart sync function
+  // ✅ Updated: Sync cart with backend using cartApi
   const syncCartWithBackend = useCallback(async () => {
     if (!currentUser || items.length === 0) {
       throw new Error("User not authenticated or cart is empty");
     }
 
+    setIsSyncing(true);
     try {
-      const cartData = {
-        items: items.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-        })),
-      };
+      const cartItems = items.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+      }));
 
-      console.log("Syncing cart data:", cartData);
+      console.log("Syncing cart data:", cartItems);
 
-      const response = await fetch("/api/v1/cart/sync", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(cartData),
-      });
+      const result = await cartApi.syncCart(cartItems);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `Failed to sync cart: ${response.statusText}`
-        );
-      }
-
-      const result = await response.json();
       console.log("Cart synced successfully:", result);
-      if (result.data?.items) {
+
+      // Update Redux store with synced data
+      if (result.data?.items?.length > 0) {
         const updatedItems = result.data.items.map((item: any) => ({
           id: item.product._id,
           slug: item.product.slug,
@@ -124,75 +127,70 @@ export const useCart = () => {
     } catch (error) {
       console.error("Cart sync error:", error);
       throw error;
+    } finally {
+      setIsSyncing(false);
     }
   }, [items, currentUser, dispatch]);
 
-  // function to load cart from backend
-
+  // ✅ Updated: Load cart from backend using cartApi
   const loadCartFromBackend = useCallback(async () => {
     if (!currentUser) return;
 
     try {
-      const response = await fetch("/api/v1/cart", {
-        method: "GET",
-        credentials: "include",
-      });
+      const result = await cartApi.getCart();
+      const backendCart = result.data;
 
-      if (response.ok) {
-        const result = await response.json();
-        const backendCart = result.data;
-        if (Array.isArray(backendCart) && backendCart.length === 0) {
-          dispatch(loadCart([]));
-          return;
-        }
+      // Handle empty cart response
+      if (Array.isArray(backendCart) && backendCart.length === 0) {
+        dispatch(loadCart([]));
+        return;
+      }
 
-        if (backendCart?.items?.length > 0) {
-          const cartItems = backendCart.items.map((item: any) => ({
-            id: item.product._id,
-            slug: item.product.slug,
-            name: item.product.name,
-            price: item.product.price,
-            quantity: item.quantity,
-            stock: item.product.stock,
-            image: item.product.images[0],
-            bgColor: "#FFFFFF",
-          }));
+      // Handle cart with items
+      if (backendCart?.items?.length > 0) {
+        const cartItems = backendCart.items.map((item: any) => ({
+          id: item.product._id,
+          slug: item.product.slug,
+          name: item.product.name,
+          price: item.product.price,
+          quantity: item.quantity,
+          stock: item.product.stock,
+          image: item.product.images[0],
+          bgColor: "#FFFFFF",
+        }));
 
-          dispatch(loadCart(cartItems));
-          console.log("Cart loaded from backend:", {
-            items: cartItems.length,
-            totalItems: backendCart.summary?.totalItem || 0,
-            totalPrice: backendCart.summary?.totalPrice || 0,
-          });
-        } else {
-          dispatch(loadCart([]));
-        }
+        dispatch(loadCart(cartItems));
+      } else {
+        dispatch(loadCart([]));
       }
     } catch (error) {
       console.error("Failed to load cart from backend:", error);
     }
   }, [currentUser, dispatch]);
 
-  useEffect(() => {
-    if (currentUser && items.length === 0) {
-      loadCartFromBackend();
+  const clearAllItems = useCallback(async () => {
+    try {
+      if (currentUser) {
+        await cartApi.clearCart();
+      }
+      dispatch(clearCart());
+    } catch (error) {
+      console.error("Failed to clear cart on backend:", error);
+
+      dispatch(clearCart());
     }
-  }, [currentUser, loadCartFromBackend, items.length]);
+  }, [currentUser, dispatch]);
 
   const addProductToCart = useCallback(
-    (product: Product | CartProductInput, quantity: number = 1) => {
-      const cartItem: CartItem = {
+    (product: CartProductInput | any, quantity: number = 1) => {
+      const cartItem = {
         id: product._id || product.id || product.slug,
         slug: product.slug,
         name: product.name,
         price: product.price,
         quantity,
         stock: product.stock || 100,
-
-        image:
-          ("images" in product && product.images?.[0]) ||
-          ("image" in product && product.image) ||
-          "",
+        image: product.images?.[0] || product.image || "",
         bgColor: product.bgColor || "#FFFFFF",
       };
       dispatch(addToCart(cartItem));
@@ -229,14 +227,6 @@ export const useCart = () => {
     [dispatch]
   );
 
-  const clearAllItems = useCallback(() => {
-    dispatch(clearCart());
-  }, [dispatch]);
-
-  const toggleCartVisibility = useCallback(() => {
-    dispatch(closeCart());
-  }, [dispatch]);
-
   const openCartDrawer = useCallback(() => {
     dispatch(openCart());
   }, [dispatch]);
@@ -270,6 +260,7 @@ export const useCart = () => {
     totalItems,
     totalAmount,
     isCartOpen,
+    isSyncing,
 
     // Actions
     addProductToCart,
@@ -278,15 +269,15 @@ export const useCart = () => {
     incrementItem,
     decrementItem,
     clearAllItems,
-    toggleCartVisibility,
     openCartDrawer,
     closeCartDrawer,
+
+    syncCartWithBackend,
+    loadCartFromBackend,
 
     // Helpers
     getItemQuantity,
     isItemInCart,
     getFreeShippingAmount,
-    syncCartWithBackend,
-    loadCartFromBackend,
   };
 };

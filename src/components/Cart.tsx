@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { HiMinus, HiPlus } from "react-icons/hi";
 import { FiX, FiAlertCircle } from "react-icons/fi";
 import { useCart } from "../hooks/useCart";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/TypedHooks";
+import api from "../api/axios";
+import { loadStripe } from "@stripe/stripe-js";
 
 const Cart = () => {
   const {
@@ -18,54 +20,73 @@ const Cart = () => {
     getFreeShippingAmount,
     syncCartWithBackend,
   } = useCart();
-
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
   const isCartDrawerOpen = useAppSelector((state) => state.cart.isCartOpen);
   const { data: currentUser, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const freeShippingAmount = getFreeShippingAmount();
 
-  // ✅ Add loading and error states
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
+  // lock bg scroll
+  useLayoutEffect(() => {
+    if (isCartDrawerOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+    } else {
+      const y = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      if (y) window.scrollTo(0, -parseInt(y));
+    }
+    return () => {
+      /* cleanup in case of unmount */
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+    };
+  }, [isCartDrawerOpen]);
+
+  /* checkout handler */
   const handleCheckout = async () => {
     if (authLoading || isCheckingOut) return;
-
-    // Clear previous error
     setCheckoutError(null);
 
     if (!currentUser) {
       closeCartDrawer();
-      navigate("/login", { replace: true, state: { from: "checkout" } });
+      navigate("/login", { replace: true, state: { from: "/cart" } });
       return;
     }
 
     setIsCheckingOut(true);
     try {
       await syncCartWithBackend();
+      const { data } = await api.post("/api/v1/checkout/session");
+      const stripe = await stripePromise;
+      await stripe!.redirectToCheckout({ sessionId: data.data.sessionId });
       closeCartDrawer();
       navigate("/checkout");
     } catch (error: any) {
-      console.error("Checkout error:", error);
-
-      // ✅ Better error handling with user-friendly messages
       const errorMessage = error.message?.includes("product")
         ? "Some items in your cart are no longer available. Please review and update your cart."
         : error.message?.includes("network") || error.message?.includes("fetch")
           ? "Connection issue. Please check your internet and try again."
           : "Unable to proceed to checkout. Please try again.";
-
       setCheckoutError(errorMessage);
     } finally {
       setIsCheckingOut(false);
     }
   };
 
-  // ✅ Clear error when cart changes
-  React.useEffect(() => {
-    if (checkoutError) {
-      setCheckoutError(null);
-    }
+  useEffect(() => {
+    if (checkoutError) setCheckoutError(null);
   }, [items.length]);
 
   return (
@@ -75,7 +96,6 @@ const Cart = () => {
       }`}
     >
       <div className="flex flex-col h-screen">
-        {/* Header */}
         <header className="w-full px-6 py-4 border-black border-b xl:py-[22px]">
           <div className="flex justify-between items-center w-full">
             <h3 className="uppercase text-lg text-black font-semibold">
@@ -104,10 +124,9 @@ const Cart = () => {
           </div>
         </header>
 
-        {/* Cart Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 h-full">
           {items.length === 0 ? (
-            // Empty Cart
+            /* Empty cart message */
             <div className="flex flex-col items-center justify-center h-full text-center p-6">
               <div className="mb-4">
                 <svg
@@ -136,9 +155,7 @@ const Cart = () => {
               <p className="text-gray-600">Add some products to get started!</p>
             </div>
           ) : (
-            // Cart Items
-            <div className="px-6 mt-6 mb-2">
-              {/* Free Shipping Banner */}
+            <div className="px-6 mt-6 mb-2 h-full">
               <div className="w-full capitalize font-semibold mb-4 border-black border-b">
                 {freeShippingAmount > 0 ? (
                   <p className="pb-2.5">
@@ -152,27 +169,22 @@ const Cart = () => {
                 )}
               </div>
 
-              {/* Cart Items List */}
-              <div className="w-full">
-                <ul className="w-full space-y-4">
-                  {items.map((item) => (
-                    <CartItem
-                      key={item.id}
-                      item={item}
-                      onIncrement={() => incrementItem(item.id)}
-                      onDecrement={() => decrementItem(item.id)}
-                      onRemove={() => removeItem(item.id)}
-                    />
-                  ))}
-                </ul>
-              </div>
+              <ul className="w-full space-y-4 h-full overflow-y-auto pr-1">
+                {items.map((item) => (
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    onIncrement={() => incrementItem(item.id)}
+                    onDecrement={() => decrementItem(item.id)}
+                    onRemove={() => removeItem(item.id)}
+                  />
+                ))}
+              </ul>
             </div>
           )}
         </div>
-
-        {/* Footer */}
+        {/* footer */}
         <footer className="w-full p-4 border-black border-t bg-white">
-          {/* ✅ Error Message Display */}
           {checkoutError && (
             <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
               <FiAlertCircle
@@ -192,13 +204,10 @@ const Cart = () => {
           )}
 
           <div className="w-full py-2 flex justify-between items-center">
-            <div>
-              <h3 className="text-sm font-semibold">Subtotal ({totalItems})</h3>
-            </div>
+            <h3 className="text-sm font-semibold">Subtotal ({totalItems})</h3>
             <h3 className="text-lg font-bold">${totalAmount.toFixed(2)}</h3>
           </div>
 
-          {/* ✅ Enhanced checkout button */}
           <button
             onClick={handleCheckout}
             disabled={items.length === 0 || authLoading || isCheckingOut}
@@ -226,93 +235,77 @@ const Cart = () => {
   );
 };
 
-// ✅ Memoized Cart Item Component for Performance
-const CartItem = React.memo(
-  ({
-    item,
-    onIncrement,
-    onDecrement,
-    onRemove,
-  }: {
-    item: any;
-    onIncrement: () => void;
-    onDecrement: () => void;
-    onRemove: () => void;
-  }) => {
-    return (
-      <li
-        style={{
-          boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-        }}
-        className="w-full flex items-center gap-x-2 p-2 rounded-xl"
-      >
-        {/* Product Image */}
-        <div className="rounded-lg overflow-hidden flex-shrink-0">
-          <img
-            src={item.image}
-            alt={item.name}
-            loading="lazy"
-            width={94}
-            height={94}
-            className="object-cover"
-          />
+const CartItem = ({
+  item,
+  onIncrement,
+  onDecrement,
+  onRemove,
+}: {
+  item: any;
+  onIncrement: () => void;
+  onDecrement: () => void;
+  onRemove: () => void;
+}) => (
+  <li
+    style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}
+    className="w-full flex items-center gap-x-2 p-2 rounded-xl"
+  >
+    <div className="rounded-lg overflow-hidden flex-shrink-0">
+      <img
+        src={item.image}
+        alt={item.name}
+        loading="lazy"
+        width={94}
+        height={94}
+        className="object-cover"
+      />
+    </div>
+
+    <div className="flex flex-col w-full pl-5">
+      <div className="flex items-center gap-2 w-full">
+        <p className="flex-1 font-medium text-lg text-[#59432D] tracking-wide">
+          {item.name}
+        </p>
+        <button
+          onClick={onRemove}
+          aria-label={`Remove ${item.name} from cart`}
+          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <FiX className="text-xl bg-[#59432D] p-1 text-white rounded-full hover:bg-[#4a3424] transition-colors" />
+        </button>
+      </div>
+
+      <div className="flex justify-between items-center">
+        <div className="flex justify-center items-center border border-black/20 rounded-md text-sm text-[#59432D] mt-[10px]">
+          <button
+            type="button"
+            onClick={onDecrement}
+            disabled={item.quantity <= 1}
+            aria-label={`Decrease quantity of ${item.name}`}
+            className="border-r border-black/20 h-6 w-9 flex justify-center items-center disabled:opacity-50 hover:bg-gray-50 transition-colors"
+          >
+            <HiMinus />
+          </button>
+          <span className="h-6 w-9 border-r border-black/20 flex justify-center items-center">
+            {item.quantity}
+          </span>
+          <button
+            type="button"
+            onClick={onIncrement}
+            disabled={item.quantity >= (item.stock || 100)}
+            aria-label={`Increase quantity of ${item.name}`}
+            className="h-6 w-9 flex justify-center items-center disabled:opacity-50 hover:bg-gray-50 transition-colors"
+          >
+            <HiPlus />
+          </button>
         </div>
 
-        {/* Product Details */}
-        <div className="flex flex-col w-full pl-5">
-          {/* Name and Remove Button */}
-          <div className="flex items-center gap-2 w-full">
-            <p className="flex-1 font-medium text-lg text-[#59432D] tracking-wide">
-              {item.name}
-            </p>
-            <button
-              onClick={onRemove}
-              aria-label={`Remove ${item.name} from cart`}
-              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <FiX className="text-xl bg-[#59432D] p-1 text-white rounded-full cursor-pointer hover:bg-[#4a3424] transition-colors" />
-            </button>
-          </div>
-
-          {/* Quantity Controls and Price */}
-          <div className="flex justify-between items-center">
-            <div className="flex justify-center items-center border border-black/20 rounded-md text-sm text-[#59432D] mt-[10px]">
-              <button
-                type="button"
-                onClick={onDecrement}
-                disabled={item.quantity <= 1}
-                aria-label={`Decrease quantity of ${item.name}`}
-                className="border-r border-black/20 h-6 w-9 flex justify-center items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-              >
-                <HiMinus className="font-semibold" />
-              </button>
-              <span className="h-6 w-9 border-r border-black/20 flex justify-center items-center">
-                {item.quantity}
-              </span>
-              <button
-                type="button"
-                onClick={onIncrement}
-                disabled={item.quantity >= (item.stock || 100)}
-                aria-label={`Increase quantity of ${item.name}`}
-                className="h-6 w-9 flex justify-center items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-              >
-                <HiPlus className="font-extrabold" />
-              </button>
-            </div>
-
-            {/* Price */}
-            <div className="flex justify-center items-center gap-2 text-[#59432D] mt-[5px]">
-              <span className="font-semibold">
-                ${(item.price * item.quantity).toFixed(2)}
-              </span>
-            </div>
-          </div>
-        </div>
-      </li>
-    );
-  }
+        <span className="font-semibold text-[#59432D] mt-[5px]">
+          ${(item.price * item.quantity).toFixed(2)}
+        </span>
+      </div>
+    </div>
+  </li>
 );
-
-CartItem.displayName = "CartItem";
 
 export default Cart;

@@ -27,11 +27,11 @@ const ResponsiveNav = ({
   }, [isAccordionOpen]);
 
   const shopLinks = [
-    { name: "All Products", path: "#" },
-    { name: "Supplements", path: "#" },
-    { name: "Skincare", path: "#" },
-    { name: "Haircare", path: "#" },
-    { name: "Immunity", path: "#" },
+    { name: "All Products", path: "/shop/shopall" },
+    { name: "Supplements", path: "/shop/supplements" },
+    { name: "Skincare", path: "/shop/skincare" },
+    { name: "Haircare", path: "/shop/haircare" },
+    { name: "Immunity", path: "/shop/immunity" },
   ];
 
   const handleNavClick = () => {
@@ -75,7 +75,7 @@ const ResponsiveNav = ({
             <ul className="w-full px-8">
               <li className="w-full">
                 <div className="flex justify-between items-center py-5 text-sm font-semibold uppercase">
-                  <Link to={"/Shop"} onClick={handleNavClick}>
+                  <Link to={"/shop/shopall"} onClick={handleNavClick}>
                     Shop
                   </Link>
                   <span onClick={handleAccordion} className="cursor-pointer">

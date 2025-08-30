@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLogin } from "../hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate, Link, replace } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 interface LoginData {
   email: string;
@@ -18,6 +18,7 @@ const Login = () => {
   const loginMutation = useLogin();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState<LoginData>({
     email: "",
@@ -55,7 +56,8 @@ const Login = () => {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
-
+  const redirectPath =
+    (location.state as { from?: string } | null)?.from || "/profile";
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -73,7 +75,7 @@ const Login = () => {
 
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
-      navigate("/Profile");
+      navigate("/profile", { replace: true });
     } catch (err: any) {
       console.error("Login error:", err);
 

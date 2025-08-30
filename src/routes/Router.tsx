@@ -15,6 +15,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Profile from "../pages/Profile";
 import Checkout from "../pages/Checkout";
+import CheckoutSuccess from "../pages/checkoutSuccess";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,7 @@ const Router = createBrowserRouter(
       <Route path="/signup" element={<Signup />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/checkout/success" element={<CheckoutSuccess />} />
     </Route>
   )
 );
