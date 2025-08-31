@@ -108,14 +108,13 @@ export default function CheckoutSuccess() {
           addDebug("Order set successfully");
         } catch (apiError) {
           clearTimeout(timeoutId);
-          throw apiError; // Re-throw to be caught by outer catch
+          throw apiError;
         }
       } catch (err) {
         addDebug("=== ERROR OCCURRED ===");
         addDebug(`Error name: ${(err as any)?.name || "Unknown"}`);
         addDebug(`Error message: ${(err as any)?.message || "Unknown"}`);
 
-        // Log error properties safely
         try {
           if (err && typeof err === "object") {
             Object.keys(err).forEach((key) => {
