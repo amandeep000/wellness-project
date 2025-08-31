@@ -8,6 +8,7 @@ import { useAppSelector } from "../hooks/TypedHooks";
 import api from "../api/axios";
 import { loadStripe } from "@stripe/stripe-js";
 
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 const Cart = () => {
   const {
     items,
@@ -20,7 +21,6 @@ const Cart = () => {
     getFreeShippingAmount,
     syncCartWithBackend,
   } = useCart();
-  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
   const isCartDrawerOpen = useAppSelector((state) => state.cart.isCartOpen);
   const { data: currentUser, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -72,11 +72,11 @@ const Cart = () => {
       const stripe = await stripePromise;
       await stripe!.redirectToCheckout({ sessionId: data.data.sessionId });
       closeCartDrawer();
-      navigate("/checkout");
     } catch (error: any) {
-      const errorMessage = error.message?.includes("product")
+      const message = String(error?.message || "");
+      const errorMessage = message.includes("product")
         ? "Some items in your cart are no longer available. Please review and update your cart."
-        : error.message?.includes("network") || error.message?.includes("fetch")
+        : message.includes("network") || message.includes("fetch")
           ? "Connection issue. Please check your internet and try again."
           : "Unable to proceed to checkout. Please try again.";
       setCheckoutError(errorMessage);
