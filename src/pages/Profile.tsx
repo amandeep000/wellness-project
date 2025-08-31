@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from "../hooks/useAuth";
 import { useUpdateProfile, useUpdateAvatar } from "../hooks/useAuth";
+import Loader from "../components/Loader";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useAddAddress,
@@ -171,7 +172,7 @@ const Profile = () => {
   }, []);
 
   if (isLoading) {
-    return <p className="text-center">Loading...</p>;
+    return <Loader />;
   }
 
   if (!currentUser) {
