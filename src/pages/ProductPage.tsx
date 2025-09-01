@@ -14,6 +14,7 @@ import FeatureBanner from "../components/FeatureBanner";
 import { useProductBySlug } from "../hooks/useProduct";
 import HomeNewsletter from "../components/HomeNewsletter";
 import { useCart } from "../hooks/useCart";
+import Loader from "../components/Loader";
 
 type IngredientItems = {
   title: string;
@@ -84,7 +85,9 @@ const ProductPage = () => {
   ];
   if (isLoading)
     return (
-      <div className="text-4xl text-center w-full">Loading Product...</div>
+      <div className="w-full h-screen">
+        <Loader />
+      </div>
     );
   if (error || !product)
     return (

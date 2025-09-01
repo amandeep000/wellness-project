@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { HiMinus, HiPlus } from "react-icons/hi";
 import { FiX, FiAlertCircle } from "react-icons/fi";
 import { useCart } from "../hooks/useCart";
@@ -9,6 +9,7 @@ import api from "../api/axios";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
+
 const Cart = () => {
   const {
     items,
@@ -18,6 +19,7 @@ const Cart = () => {
     incrementItem,
     decrementItem,
     removeItem,
+    clearAllItems,
     getFreeShippingAmount,
     syncCartWithBackend,
   } = useCart();
@@ -28,6 +30,11 @@ const Cart = () => {
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  // ✅ Add refs to prevent infinite loops
+  const syncAttempts = useRef(0);
+  const maxSyncAttempts = 3;
+  const lastSyncTime = useRef(0);
 
   // lock bg scroll
   useLayoutEffect(() => {
@@ -43,16 +50,65 @@ const Cart = () => {
       document.body.style.top = "";
       document.body.style.left = "";
       document.body.style.right = "";
-      if (y) window.scrollTo(0, -parseInt(y));
+      if (y) {
+        const scrollPos = parseInt(y.replace(/[^0-9-]/g, ""), 10) || 0;
+        window.scrollTo(0, -scrollPos);
+      }
     }
     return () => {
-      /* cleanup in case of unmount */
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.left = "";
       document.body.style.right = "";
     };
   }, [isCartDrawerOpen]);
+
+  // ✅ Safe cart sync with retry limit and empty cart handling
+  const safeCartSync = async () => {
+    // Don't sync if cart is empty
+    if (items.length === 0) {
+      console.log("Cart is empty, skipping sync");
+      return true;
+    }
+
+    // Prevent too frequent syncs (debounce)
+    const now = Date.now();
+    if (now - lastSyncTime.current < 1000) {
+      console.log("Sync too frequent, skipping");
+      return true;
+    }
+
+    // Check sync attempts
+    if (syncAttempts.current >= maxSyncAttempts) {
+      console.log("Max sync attempts reached, skipping");
+      throw new Error("Unable to sync cart after multiple attempts");
+    }
+
+    try {
+      syncAttempts.current++;
+      lastSyncTime.current = now;
+      await syncCartWithBackend();
+      console.log("Cart synced successfully");
+      syncAttempts.current = 0; // Reset on success
+      return true;
+    } catch (error: any) {
+      console.error("Cart sync failed:", error);
+
+      // If it's a 400 error and cart is empty, consider it successful
+      if (error?.response?.status === 400 && items.length === 0) {
+        console.log("Cart sync failed but cart is empty, continuing");
+        syncAttempts.current = 0;
+        return true;
+      }
+
+      // If max attempts reached, throw error
+      if (syncAttempts.current >= maxSyncAttempts) {
+        throw new Error("Failed to sync cart with server");
+      }
+
+      throw error;
+    }
+  };
 
   /* checkout handler */
   const handleCheckout = async () => {
@@ -65,29 +121,87 @@ const Cart = () => {
       return;
     }
 
+    // ✅ Check if cart is empty before checkout
+    if (items.length === 0) {
+      setCheckoutError("Your cart is empty. Please add items before checkout.");
+      return;
+    }
+
     setIsCheckingOut(true);
     try {
-      await syncCartWithBackend();
+      // ✅ Use safe cart sync
+      await safeCartSync();
+
       const { data } = await api.post("/api/v1/checkout/session");
+
+      if (!data?.data?.sessionId) {
+        throw new Error("Invalid checkout session response");
+      }
+
+      clearAllItems();
       const stripe = await stripePromise;
-      await stripe!.redirectToCheckout({ sessionId: data.data.sessionId });
+      if (!stripe) {
+        throw new Error("Stripe failed to initialize");
+      }
+
+      localStorage.removeItem("cart");
+      await stripe.redirectToCheckout({ sessionId: data.data.sessionId });
       closeCartDrawer();
     } catch (error: any) {
-      const message = String(error?.message || "");
-      const errorMessage = message.includes("product")
-        ? "Some items in your cart are no longer available. Please review and update your cart."
-        : message.includes("network") || message.includes("fetch")
-          ? "Connection issue. Please check your internet and try again."
-          : "Unable to proceed to checkout. Please try again.";
+      console.error("Checkout error:", error);
+
+      // ✅ Better error message handling
+      let errorMessage = "Unable to proceed to checkout. Please try again.";
+
+      const errorMsg = String(
+        error?.response?.data?.message || error?.message || ""
+      ).toLowerCase();
+
+      if (
+        errorMsg.includes("product") ||
+        errorMsg.includes("stock") ||
+        errorMsg.includes("available")
+      ) {
+        errorMessage =
+          "Some items in your cart are no longer available. Please review and update your cart.";
+      } else if (
+        errorMsg.includes("network") ||
+        errorMsg.includes("fetch") ||
+        errorMsg.includes("connection")
+      ) {
+        errorMessage =
+          "Connection issue. Please check your internet and try again.";
+      } else if (errorMsg.includes("cart") && errorMsg.includes("empty")) {
+        errorMessage = "Your cart is empty. Please add items before checkout.";
+      } else if (errorMsg.includes("sync")) {
+        errorMessage =
+          "Unable to sync your cart. Please refresh the page and try again.";
+      } else if (errorMsg.includes("session")) {
+        errorMessage = "Unable to create checkout session. Please try again.";
+      }
+
       setCheckoutError(errorMessage);
     } finally {
       setIsCheckingOut(false);
     }
   };
 
+  // ✅ Clear error when cart changes and reset sync attempts
   useEffect(() => {
-    if (checkoutError) setCheckoutError(null);
+    if (checkoutError) {
+      setCheckoutError(null);
+    }
+    // Reset sync attempts when cart changes
+    syncAttempts.current = 0;
   }, [items.length]);
+
+  // ✅ Handle cart drawer close - reset states
+  useEffect(() => {
+    if (!isCartDrawerOpen) {
+      setCheckoutError(null);
+      syncAttempts.current = 0;
+    }
+  }, [isCartDrawerOpen]);
 
   return (
     <aside
@@ -153,6 +267,12 @@ const Cart = () => {
               </div>
               <h3 className="text-lg font-semibold mb-2">Your cart is empty</h3>
               <p className="text-gray-600">Add some products to get started!</p>
+              <button
+                onClick={closeCartDrawer}
+                className="mt-4 bg-[#151516] text-white px-6 py-2 rounded-lg text-sm hover:bg-[#2a2a2b] transition-colors"
+              >
+                Continue Shopping
+              </button>
             </div>
           ) : (
             <div className="px-6 mt-6 mb-2 h-full">
@@ -183,6 +303,7 @@ const Cart = () => {
             </div>
           )}
         </div>
+
         {/* footer */}
         <footer className="w-full p-4 border-black border-t bg-white">
           {checkoutError && (
@@ -235,6 +356,7 @@ const Cart = () => {
   );
 };
 
+// CartItem component remains the same
 const CartItem = ({
   item,
   onIncrement,

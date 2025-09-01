@@ -138,7 +138,7 @@ const Loader = () => {
 const StyledWrapper = styled.div`
   .loader {
     width: fit-content;
-    height: fit-content;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
