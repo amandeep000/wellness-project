@@ -14,7 +14,7 @@ const ParallexSection = () => {
         </p>
         <LinkButton
           className="py-4 px-7 cursor-pointer inline-block bg-text-default text-text-light font-semibold uppercase text-sm tracking-widest"
-          to="#"
+          to="/about"
         >
           about us
         </LinkButton>

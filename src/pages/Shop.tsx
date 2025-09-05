@@ -6,13 +6,16 @@ import HomeNewsletter from "../components/HomeNewsletter";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useProducts, useproductByCategory } from "../hooks/useProduct";
+import Loader from "../components/Loader";
 
 type ProductProps = {
+  _id: string;
   slug: string;
   name: string;
   price?: number;
   image: string;
   hoverImage?: string;
+  textColor?: string;
 };
 
 const Shop = () => {
@@ -22,7 +25,15 @@ const Shop = () => {
       ? useProducts()
       : useproductByCategory(categorySlug || "");
   const { data: products, isLoading, error } = productsQuery;
-
+  console.log("this is the whole product inthe shop page: ", products);
+  useEffect(() => {
+    products?.map((product) => {
+      return console.log(
+        "this is the product category name for the individual product: ",
+        product.category.name
+      );
+    });
+  });
   const handleAddToCart = () => {};
 
   useEffect(() => {
@@ -34,7 +45,11 @@ const Shop = () => {
   }, []);
 
   if (isLoading)
-    return <div className="text-center p-8">Loading products...</div>;
+    return (
+      <div className="w-full m-auto min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
 
   if (error)
     return (
@@ -43,14 +58,20 @@ const Shop = () => {
       </div>
     );
 
-  const productsForCards: ProductProps[] =
-    products?.map((prod) => ({
-      slug: prod.slug,
-      name: prod.name,
-      price: prod.price,
-      image: prod.images[0],
-      hoverImage: prod.images.length > 1 ? prod.images[1] : undefined,
-    })) || [];
+  const productsForCards: ProductProps[] = (products ?? []).flatMap((prod) =>
+    prod._id
+      ? [
+          {
+            _id: prod._id,
+            slug: prod.slug,
+            name: prod.name,
+            price: prod.price,
+            image: prod.images[0],
+            hoverImage: prod.images[1],
+          } satisfies ProductProps,
+        ]
+      : []
+  );
 
   return (
     <section className="w-full">
@@ -113,7 +134,7 @@ const Shop = () => {
         <div className="w-full text-center border-black/35 border-b pb-6 flex flex-col">
           <span className="capitalize text-text-default text-sm font-semibold mb-3">{`${products?.length ?? 0} products`}</span>
           <span className="font-bold text-center text-text-default uppercase">
-            all products
+            Shop our Products
           </span>
         </div>
         {/* products */}

@@ -44,14 +44,14 @@ const ShopHover = () => {
 
   return (
     <motion.section
-      initial={false} // prevents initial jitter
+      initial={false}
       animate={
         isOpen
           ? { opacity: 1, y: 0, pointerEvents: "auto" }
           : { opacity: 0, y: -8, pointerEvents: "none" }
       }
       transition={{ duration: 0.25, ease: "easeOut" }}
-      className="fixed top-[73.6px] left-0 w-full max-h-[60vh] bg-white shadow-md z-40"
+      className="fixed top-[73.6px] left-0 w-full max-h-[60vh] bg-[#fbfaf6] shadow-md z-40"
       onMouseLeave={() => dispatch(closeShopDropdown())}
     >
       <div className="px-4 py-8">

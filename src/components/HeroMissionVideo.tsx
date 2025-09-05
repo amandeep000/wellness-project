@@ -26,7 +26,7 @@ const HeroMissionVideo = () => {
 
           <LinkButton
             className="tracking-wider text-sm font-semibold text-text-default py-4 px-6 border-none outline-none bg-bg"
-            to="#"
+            to="/about"
           >
             our mission
           </LinkButton>

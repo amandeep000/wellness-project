@@ -2,8 +2,7 @@ import { useCart } from "../hooks/useCart";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 type ProductProps = {
-  id?: string;
-  _id?: string;
+  _id: string;
   slug: string;
   name: string;
   price?: number;
@@ -21,10 +20,17 @@ interface ProductCardProps {
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   const { addProductToCart, isItemInCart, getItemQuantity } = useCart();
   const [isAdding, setIsAdding] = useState(false);
+
+  const hasValidId = product._id && product._id.trim() !== "";
+  console.log("Product ID Check:", {
+    hasId: !!product._id,
+    idValue: product._id,
+    hasValidId,
+    slug: product.slug,
+  });
   const completeProduct = {
     ...product,
-    id: product._id || product.id || product.slug,
-    _id: product._id || product.id || product.slug,
+    id: product._id!,
     price: product.price || 0,
     stock: product.stock || 100,
     images: product.images || [product.image],
@@ -34,7 +40,10 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-
+    console.log(
+      "product being added to cart in product card: ",
+      completeProduct
+    );
     if (!completeProduct.price) {
       console.warn("cannot add product without price");
       return;
@@ -51,9 +60,8 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
       setIsAdding(false);
     }
   };
-  const productId = completeProduct.id;
-  const itemInCart = isItemInCart(productId);
-  const cartQuantity = getItemQuantity(productId);
+  const itemInCart = hasValidId ? isItemInCart(product._id!) : false;
+  const cartQuantity = hasValidId ? getItemQuantity(product._id!) : 0;
   return (
     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md 2xl:max-w-full flex flex-col mx-auto">
       <Link

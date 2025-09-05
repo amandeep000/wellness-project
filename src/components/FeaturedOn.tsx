@@ -72,7 +72,7 @@ const FeaturedOn = () => {
                   </div>
                   <div className="pl-4 pr-6 py-4  ">
                     <LinkButton
-                      to={slide.link}
+                      to={"/science"}
                       className="text-text-default text-sm font-semibold tracking-wider uppercase relative after:content-[''] after:block after:h-[1px] after:bg-text-default after:absolute after:-bottom-1 after:w-full"
                     >
                       read more

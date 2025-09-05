@@ -167,12 +167,16 @@ const Profile = () => {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "smooth",
+      behavior: "instant",
     });
   }, []);
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <div className="w-full m-auto min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
   }
 
   if (!currentUser) {
@@ -214,7 +218,7 @@ const Profile = () => {
               <User size={20} /> <span>Admin</span>
             </Link>
             <Link
-              to={"/shop"}
+              to={"/shop/shopall"}
               className="flex justify-evenly items-center gap-4 hover:text-gray-600"
             >
               <ShoppingBag size={20} /> Shop
@@ -233,7 +237,7 @@ const Profile = () => {
             </Link>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-red-600 hover:text-red-800"
+              className="flex items-center gap-2 text-red-600 hover:text-red-800 cursor-pointer"
             >
               <LogOut size={18} /> {loggingOut ? "Logging You Out" : "Logout"}
             </button>

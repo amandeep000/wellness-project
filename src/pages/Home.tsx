@@ -8,7 +8,6 @@ import FeaturedOn from "../components/FeaturedOn";
 import HeroMissionVideo from "../components/HeroMissionVideo";
 import ReviewTemplate from "../components/ReviewTemplate";
 import HomeNewsletter from "../components/HomeNewsletter";
-import Cart from "../components/Cart";
 
 const Home = () => {
   const review = [

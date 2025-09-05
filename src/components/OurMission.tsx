@@ -1,4 +1,5 @@
 import CutstomerHappyText from "./CustomerHappyText";
+import { Link } from "react-router-dom";
 
 const OurMission = () => {
   return (
@@ -32,7 +33,7 @@ const OurMission = () => {
                 </p>
               </div>
               <span className="uppercase tracking-wider text-sm xl:text-lg font-semibold w-full relative our_mission text-center inline-block">
-                Read more
+                <Link to={"/science"}>Read more</Link>
               </span>
             </div>
           </div>

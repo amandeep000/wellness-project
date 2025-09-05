@@ -83,7 +83,7 @@ const Search = () => {
           <div className="flex justify-center items-center uppercase font-bold mb-4">
             Most popular
           </div>
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          <ul className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
             {products.map((product, i) => (
               <li key={i} className="w-full aspect-3/4 mx-auto cursor-pointer">
                 <div className="w-full max-w-[232px] flex flex-col justify-center items-center">

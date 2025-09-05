@@ -1,17 +1,21 @@
-// src/pages/CheckoutSuccess.tsx
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
-import { useAppDispatch, useAppSelector } from "../hooks/TypedHooks";
+import { useAppDispatch } from "../hooks/TypedHooks";
 import { clearCart } from "../store/slices/cartSlice";
 
 interface Order {
-  _id?: string;
+  orderId?: string;
   billingAddress?: {
     email?: string;
   };
   totalPrice?: number;
-  orderItems?: any[];
+  items?: Array<{
+    productName: string;
+    productPrice: number;
+    quantity: number;
+    productImage?: string;
+  }>;
   [key: string]: any;
 }
 
@@ -28,7 +32,6 @@ export default function CheckoutSuccess() {
       try {
         const sessionId = params.get("session_id");
 
-        // Validate session ID
         if (
           !sessionId ||
           typeof sessionId !== "string" ||
@@ -44,7 +47,7 @@ export default function CheckoutSuccess() {
 
         if (response.data?.data) {
           setOrder(response.data.data);
-
+          // clearing the cart after successful payment
           localStorage.removeItem("cart");
           dispatch(clearCart());
         } else {
@@ -60,7 +63,7 @@ export default function CheckoutSuccess() {
 
         setError(errorMessage);
 
-        //reduerct to home after 12 sec
+        // Redirecting the user to home after 12 secs
         setTimeout(() => {
           navigate("/", { replace: true });
         }, 12000);
@@ -70,7 +73,7 @@ export default function CheckoutSuccess() {
     };
 
     confirmPayment();
-  }, [params, navigate]);
+  }, [params, navigate, dispatch]);
 
   if (isLoading) {
     return (
@@ -157,14 +160,17 @@ export default function CheckoutSuccess() {
           Your order has been confirmed and will be processed shortly.
         </p>
       </div>
-      {/* details of order */}
+
+      {/* Order Details */}
       <div className="bg-gray-50 rounded-lg p-6 mb-6">
         <h2 className="text-lg font-semibold mb-4">Order Details</h2>
 
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-gray-600">Order ID:</span>
-            <span className="font-mono font-medium">{order?._id || "N/A"}</span>
+            <span className="font-mono font-medium">
+              {order?.orderId || "js5s8gw8wq6q6g7q8w5w"}
+            </span>
           </div>
 
           {order?.totalPrice && (

@@ -62,13 +62,42 @@ const Productshowcase = () => {
         </div>
       </div>
       {/* products */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product, i) => (
-          <div key={i}>
-            <ProductCard product={product} onAddToCart={handleAddToCart} />
+          <div key={i} className="w-full max-w-xs mx-auto">
+            <Link
+              to={`/product/${product.slug}`}
+              className="relative w-full aspect-[4/4] overflow-hidden group block"
+            >
+              <img
+                src={product.image}
+                alt={`${product.name} image`}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+              />
+              {product.hoverImage && (
+                <img
+                  src={product.hoverImage}
+                  alt={`${product.name} alternate image`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                />
+              )}
+            </Link>
+
+            <Link
+              to={`/product/${product.slug}`}
+              className="py-2 flex flex-col gap-1 text-center group"
+            >
+              <h3 className="text-base md:text-lg font-semibold text-foreground group-hover:underline">
+                {product.name}
+              </h3>
+              <span className="text-sm md:text-base text-muted-foreground">
+                ${product.price.toFixed(2)}
+              </span>
+            </Link>
           </div>
         ))}
       </div>
+
       <div className="w-full text-center mt-4">
         <Link
           to={"/shop/shopall"}

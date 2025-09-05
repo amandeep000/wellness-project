@@ -12,9 +12,20 @@ import ProductReviews from "../components/ProductReviews";
 import ReuseAccordion from "../components/ReuseAccordion";
 import FeatureBanner from "../components/FeatureBanner";
 import { useProductBySlug } from "../hooks/useProduct";
-import HomeNewsletter from "../components/HomeNewsletter";
 import { useCart } from "../hooks/useCart";
 import Loader from "../components/Loader";
+import "@splidejs/react-splide/css";
+import MostPopularProducts from "../components/MostPopularProducts";
+
+const productType = [
+  "/supplementType/energy-icon-1.avif",
+  "/supplementType/collagen-icon-2.avif",
+  "/supplementType/hair-icon-3.avif",
+  "/supplementType/immunity-icon-4.avif",
+  "/supplementType/men-icon-5.avif",
+  "/supplementType/stress-icon-7.avif",
+  "/supplementType/women-icon-8.avif",
+];
 
 type IngredientItems = {
   title: string;
@@ -36,10 +47,10 @@ const ProductPage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [numberOfProducts, setNumberOfProducts] = useState(1);
   const totalSlides = product?.images.length;
-
+  const bgColor = product?.bgColor;
   const handleAddToCart = () => {
     if (numberOfProducts > 0 && product) {
-      // Create cart-compatible product object
+      // Creating the cart product object
       const cartProduct = {
         ...product,
         id: product._id || product.id || product.slug,
@@ -50,8 +61,7 @@ const ProductPage = () => {
         bgColor: product.bgColor,
       };
       addProductToCart(cartProduct, numberOfProducts);
-
-      // Reset quantity to 1 after adding
+      // Reset quantity to 1 after adding to cart
       setNumberOfProducts(1);
     }
   };
@@ -70,22 +80,17 @@ const ProductPage = () => {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "smooth",
+      behavior: "auto",
     });
   }, []);
 
-  productType: [
-    "/supplementType/energy-icon-1.avif",
-    "/supplementType/collagen-icon-2.avif",
-    "/supplementType/hair-icon-3.avif",
-    "/supplementType/immunity-icon-4.avif",
-    "/supplementType/men-icon-5.avif",
-    "/supplementType/stress-icon-7.avif",
-    "/supplementType/women-icon-8.avif",
-  ];
+  useEffect(() => {
+    console.log("this is product: ", product);
+  });
+
   if (isLoading)
     return (
-      <div className="w-full h-screen">
+      <div className="w-full m-auto min-h-screen flex justify-center items-center">
         <Loader />
       </div>
     );
@@ -162,13 +167,13 @@ const ProductPage = () => {
                 </p>
                 {/* progress bar */}
                 {/* <div className="absolute -bottom-3.5 left-0 w-full h-[3px] bg-black/20 overflow-hidden z-10 rounded-lg">
-                <div
-                  className="bg-black h-full transition-all duration-300"
-                  style={{
-                    width: `${((activeIndex + 1) / totalSlides) * 100}%`,
-                  }}
-                />
-              </div> */}
+                  <div
+                    className="bg-black h-full transition-all duration-300"
+                    style={{
+                      width: `${((activeIndex + 1) / totalSlides) * 100}%`,
+                    }}
+                  />
+                </div> */}
               </div>
             </div>
           </div>
@@ -182,7 +187,7 @@ const ProductPage = () => {
                 {product.name}
               </h1>
             </div>
-            {/* tags */}
+            {/* future reserved filter icons hehe*/}
             <div className="w-full my-2">
               <ul className="w-full flex gap-2">
                 {product.tags.map((tag, i) => (
@@ -206,13 +211,13 @@ const ProductPage = () => {
               </span>
               <div className="h-full">
                 <ul className="w-full flex items-center gap-3 mt-1">
-                  {product.tags.map((item, index) => (
+                  {productType.map((item, index) => (
                     <li key={index}>
                       <Link to={"#"}>
                         <img
                           src={item}
                           alt="icons"
-                          className="w-[40px] h-[40px] rounded-full"
+                          className="w-[30px] h-[30px] rounded-full"
                         />
                       </Link>
                     </li>
@@ -265,7 +270,7 @@ const ProductPage = () => {
                 </button>
               </div>
             </div>
-            {/* happy customers */}
+            {/* happy customers tag*/}
             <div className="w-full" style={{ background: product.bgColor }}>
               <p className="capitalize text-center w-full backdrop:blur-3xl bg-black/10 rounded-lg p-2">
                 +10000 happy customers | free shiping across india
@@ -286,7 +291,7 @@ const ProductPage = () => {
         <ProductReviews />
       </div>
       {/* faq's */}
-      <div className="w-full pt-10">
+      <div className="w-full pt-10 pb-10">
         <div className="w-full px-4 text-center">
           <div className="p-4 md:p-8">
             <p className="capitalize">Everything you need to know!</p>
@@ -299,12 +304,45 @@ const ProductPage = () => {
           <ReuseAccordion />
         </div>
       </div>
+      {/* most popular products */}
+      <div className="w-full">
+        <MostPopularProducts bgColor={product?.bgColor} />
+      </div>
       {/* feature banner */}
-      <div className="w-full pt-6">
+      <div className="w-full">
         <FeatureBanner />
       </div>
-      <div className="w-full">
-        <HomeNewsletter />
+      {/* newsletter */}
+      <div
+        className={`w-full relative min-h-[400px] border-black border-y md:max-h-[450px] overflow-hidden`}
+        style={{ background: product.bgColor }}
+      >
+        <div className="absolute inset-0 h-full w-full flex justify-center items-center">
+          <div className=" text-center mx-10">
+            <h2 className="font-bold text-text-default text-[25px] uppercase xl:text-[44px]">
+              join our circle & save
+            </h2>
+            <div className="m-4">
+              <p className="text-text-default xl:text-lg">
+                Sign up now for 10% off your first order – because you deserve
+                it!
+              </p>
+            </div>
+            <div className="mb-4 flex justify-center items-center xl:mx-5">
+              <input
+                type="email"
+                placeholder="Email"
+                className="md:rounded-tl-lg md:rounded-bl-lg md:rounded-tr-none md:rounded-br-none bg-bg py-2 px-3 border flex-1 xl:py-3 xl:px-4 rounded-lg lg:border-black"
+              />
+              <button className="hidden md:block bg-text-default text-text-light rounded-tr-lg rounded-br-lg px-3 py-2 border-y border-r cursor-pointer border-black xl:py-3 xl:px-4">
+                Subscribe
+              </button>
+            </div>
+            <button className="rounded-lg bg-text-default py-2 px-3 w-full text-text-light uppercase font-semibold tracking-wide cursor-pointer md:hidden">
+              Subscribe
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   );

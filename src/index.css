@@ -134,3 +134,12 @@ h6 {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   border-radius: 10px;
 }
+
+.promo-heading::after {
+  content: "";
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: white;
+  margin-top: 2px;
+}
