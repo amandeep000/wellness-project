@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 type Color = {
-  bgColor: string;
+  bgColor?: string;
 };
 
-const MostPopularProducts = ({ bgColor }: Color) => {
+const MostPopularProducts = ({ bgColor = "#ffffff" }: Color) => {
   return (
     <section className="w-full h-full ">
       <div className="w-full py-9 pb-[130px]" style={{ background: bgColor }}>

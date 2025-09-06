@@ -1,10 +1,11 @@
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { searchProducts, SearchFilters } from "../api/product";
+import { Product } from "../types/product";
 import {
   getAllProducts,
   getProductBySlug,
   getProductByCategory,
 } from "../api/product";
-import { Product } from "../types/product";
 
 export function useProducts() {
   return useQuery<Product[]>({
@@ -41,4 +42,13 @@ export function usePrefetchProduct() {
       staleTime: 10 * 60 * 1000,
     });
   };
+}
+
+export function useSearchProducts(query: string, filters?: SearchFilters) {
+  return useQuery<Product[]>({
+    queryKey: ["products", "search", query, filters],
+    queryFn: () => searchProducts(query, filters),
+    enabled: !!query && query.trim().length > 0,
+    staleTime: 5 * 60 * 1000,
+  });
 }
