@@ -10,17 +10,12 @@ export interface SearchFilters {
   minPrice?: number;
   maxPrice?: number;
 }
-
 export const getAllProducts = async (): Promise<Product[]> => {
   try {
     const res = await api.get("/api/v1/products");
     console.log("These are all the products: ", res.data);
     return res.data.data;
   } catch (error: any) {
-    console.log(
-      "There is an error fetching all the products",
-      error.response?.data
-    );
     throw error;
   }
 };
@@ -28,11 +23,6 @@ export const getAllProducts = async (): Promise<Product[]> => {
 export const getProductBySlug = async (slug: string): Promise<Product> => {
   try {
     const res = await api.get(`/api/v1/products/${slug}`);
-    console.log(
-      "this is the getProductBySlug endpoint with slug: ",
-      slug,
-      res.data
-    );
     return res.data.data;
   } catch (error: any) {
     if (error.response?.status === 404) {

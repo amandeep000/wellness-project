@@ -25,15 +25,6 @@ const Shop = () => {
       ? useProducts()
       : useproductByCategory(categorySlug || "");
   const { data: products, isLoading, error } = productsQuery;
-  console.log("this is the whole product inthe shop page: ", products);
-  useEffect(() => {
-    products?.map((product) => {
-      return console.log(
-        "this is the product category name for the individual product: ",
-        product.category.name
-      );
-    });
-  });
   const handleAddToCart = () => {};
 
   useEffect(() => {

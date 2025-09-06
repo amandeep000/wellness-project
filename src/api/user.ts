@@ -4,10 +4,6 @@ import { User } from "../types/user";
 export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const res = await api.get("/api/v1/user/me");
-    console.log(
-      "This is getCurrentUser endpoint and currentUser is: ",
-      res.data
-    );
     return res.data.data.currentUser;
   } catch (error: any) {
     if (error.response?.status === 401) {
@@ -19,7 +15,6 @@ export const getCurrentUser = async (): Promise<User | null> => {
 
 export const updateProfile = async (data: any) => {
   const res = await api.put("/api/v1/user/profile", data);
-  console.log("this is profile image data ", res.data);
   return res.data;
 };
 
@@ -29,13 +24,12 @@ export const updateAvatar = async (file: File) => {
   const res = await api.put("/api/v1/user/profile/avatar", formData, {
     withCredentials: true,
   });
-  console.log("this is the avatar data", res.data.currentUser.avatar);
+  console.log("this is avatar:", res.data);
   return res.data;
 };
 
 export const addAddress = async (data: any) => {
   const res = await api.post("/api/v1/addresses", data);
-  console.log("this is the addresses", res.data);
   return res.data;
 };
 
@@ -49,7 +43,6 @@ export const deleteAddress = async (addressId: string) => {
     const res = await api.delete(`/api/v1/addresses/${addressId}`);
     return res.data;
   } catch (error: any) {
-    console.error("Delete address error:", error.response?.data);
     throw error;
   }
 };

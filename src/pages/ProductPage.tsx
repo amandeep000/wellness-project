@@ -84,10 +84,6 @@ const ProductPage = () => {
     });
   }, []);
 
-  useEffect(() => {
-    console.log("this is product: ", product);
-  });
-
   if (isLoading)
     return (
       <div className="w-full m-auto min-h-screen flex justify-center items-center">

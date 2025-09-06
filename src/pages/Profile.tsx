@@ -39,6 +39,7 @@ const Profile = () => {
   const { mutate: logout, isPending: loggingOut } = useLogout();
   const { mutate: updateProfile, isPending: updating } = useUpdateProfile();
   const { mutate: addAddress, isPending: addingAddress } = useAddAddress();
+  const addAddressFormRef = useRef<HTMLFormElement>(null);
   const { mutate: updateAddress, isPending: updatingAddress } =
     useUpdateAddress();
   const { mutate: deleteAddress, isPending: deletingAddress } =
@@ -119,10 +120,10 @@ const Profile = () => {
       phoneNumber: formData.get("phoneNumber") as string,
       isDefault: formData.get("isDefault") === "on",
     };
-    console.log("Sending address data:", newAddress);
     addAddress(newAddress, {
       onSuccess: () => {
         e.currentTarget.reset();
+        // addAddressFormRef.current?.reset();
       },
     });
   };
@@ -150,6 +151,7 @@ const Profile = () => {
       { addressId, addressData: updatedAddress },
       {
         onSuccess: () => {
+          // e.currentTarget.reset();
           setEditingAddress(null);
         },
       }
@@ -229,12 +231,12 @@ const Profile = () => {
             >
               <Home size={20} /> Home
             </Link>
-            <Link
+            {/* <Link
               to={"#"}
-              className="flex items-center gap-4 hover:text-gray-600"
+              className=" items-center gap-4 hover:text-gray-600 hidden"
             >
               <List size={20} /> Orders
-            </Link>
+            </Link> */}
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 text-red-600 hover:text-red-800 cursor-pointer"
@@ -542,6 +544,7 @@ const Profile = () => {
               <form
                 className="space-y-2 border p-4 rounded"
                 onSubmit={handleAddAddress}
+                ref={addAddressFormRef}
               >
                 <h3 className="font-medium mb-2">Add New Address</h3>
                 <select

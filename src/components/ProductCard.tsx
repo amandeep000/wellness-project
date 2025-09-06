@@ -22,12 +22,6 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   const [isAdding, setIsAdding] = useState(false);
 
   const hasValidId = product._id && product._id.trim() !== "";
-  console.log("Product ID Check:", {
-    hasId: !!product._id,
-    idValue: product._id,
-    hasValidId,
-    slug: product.slug,
-  });
   const completeProduct = {
     ...product,
     id: product._id!,
@@ -40,10 +34,6 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log(
-      "product being added to cart in product card: ",
-      completeProduct
-    );
     if (!completeProduct.price) {
       console.warn("cannot add product without price");
       return;
@@ -56,7 +46,6 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         setIsAdding(false);
       }, 1000);
     } catch (error) {
-      console.error("failed to add to cart: ", error);
       setIsAdding(false);
     }
   };
