@@ -8,6 +8,7 @@ export default function MyOrdersPage() {
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { data: orders, isLoading } = useGetUserOrders();
+  console.log("these are the orders in the order page: ", orders);
   // useEffect(() => {
   //   (async () => {
   //     try {
