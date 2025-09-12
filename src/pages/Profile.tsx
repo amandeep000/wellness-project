@@ -214,7 +214,7 @@ const Profile = () => {
           {/* Navigation */}
           <nav className="flex flex-col justify-center items-start text-lg pl-4 space-y-5">
             <Link
-              to={"#"}
+              to={"/admin"}
               className="flex items-center gap-4 hover:text-gray-600 w-full"
             >
               <User size={20} /> <span>Admin</span>
@@ -233,7 +233,7 @@ const Profile = () => {
             </Link>
             <Link
               to={"/order"}
-              className=" items-center gap-4 hover:text-gray-600 hidden"
+              className="flex items-center gap-4 hover:text-gray-600 "
             >
               <List size={20} /> Orders
             </Link>

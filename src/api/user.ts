@@ -24,7 +24,6 @@ export const updateAvatar = async (file: File) => {
   const res = await api.put("/api/v1/user/profile/avatar", formData, {
     withCredentials: true,
   });
-  console.log("this is avatar:", res.data);
   return res.data;
 };
 
@@ -46,13 +45,19 @@ export const deleteAddress = async (addressId: string) => {
     throw error;
   }
 };
-// export const deleteAddress = async (addressId: string) => {
-//   const res = await api.delete(`/api/v1/addresses/${addressId}`);
-//   return res.data;
-// };
 
 export const getAllAddresses = async () => {
   const res = await api.get("/api/v1/addresses");
-  console.log("All addresses:", res.data);
   return res.data.data;
+};
+
+export const getAllOrders = async () => {
+  try {
+    const res = await api.get("/api/v1/orders/my");
+    console.log("these are all orders :", res.data);
+    return res.data;
+  } catch (error) {
+    console.log("there is an error in gatAllOrders: ", error);
+    throw error;
+  }
 };

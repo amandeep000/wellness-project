@@ -1,48 +1,35 @@
-// src/pages/MyOrdersPage.tsx
 import { useEffect, useState } from "react";
-
-interface OrderItem {
-  productName: string;
-  productPrice: number;
-  productQuantity: number;
-}
-
-interface Order {
-  _id: string;
-  createdAt: string;
-  orderStatus: string;
-  orderItems: OrderItem[];
-}
+import api from "../api/axios";
+import { useGetUserOrders } from "../hooks/useUpdateProfile";
+import Loader from "../components/Loader";
 
 export default function MyOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [orders, setOrders] = useState<Order[]>([]);
+  // const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { data: orders, isLoading } = useGetUserOrders();
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const res = await api.get("/api/v1/orders/my");
+  //       setOrders(res.data);
+  //     } catch (err: any) {
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   })();
+  // }, []);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/v1/orders/my", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
-        });
-        if (!res.ok) throw new Error("Failed to fetch orders");
-        const { data } = await res.json(); // ApiResponse shape
-        setOrders(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  if (loading) return <p className="mt-16 text-center">Loading orders…</p>;
+  if (isLoading)
+    return (
+      <div className="w-full m-auto min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
   if (error)
     return <p className="mt-16 text-center text-red-600">⚠ {error}</p>;
-  if (!orders.length) {
+  if (!orders?.length) {
     return <p className="mt-16 text-center">You don’t have any orders yet.</p>;
   }
 

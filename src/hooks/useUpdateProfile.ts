@@ -1,5 +1,6 @@
-import { updateProfile } from "../api/user";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getAllOrders, updateProfile } from "../api/user";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Order from "../types/orders";
 
 const useUpdateProfile = () => {
   const queryClient = useQueryClient();
@@ -11,4 +12,11 @@ const useUpdateProfile = () => {
   });
 };
 
+export const useGetUserOrders = () => {
+  return useQuery<Order[]>({
+    queryKey: ["userOrders"],
+    queryFn: getAllOrders,
+    staleTime: 3 * 60 * 1000,
+  });
+};
 export default useUpdateProfile;

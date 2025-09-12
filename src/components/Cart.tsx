@@ -174,26 +174,21 @@ const Cart = () => {
       const response = await api.post("/api/v1/checkout/session");
       console.log("Stripe checkout response:", response);
 
-      // Extract both sessionId and URL from response
       const sessionData = response?.data?.data;
       if (!sessionData) {
         throw new Error("Invalid checkout session response");
       }
 
-      // Check for session URL first (preferred method)
       if (sessionData.url && typeof sessionData.url === "string") {
-        console.log("Using session URL for redirect:", sessionData.url);
         closeCartDrawer();
-        // Direct redirect using session URL - more reliable than redirectToCheckout
+
         window.location.assign(sessionData.url);
         return;
       }
 
-      // Fallback to sessionId if URL not available
       if (sessionData.sessionId && typeof sessionData.sessionId === "string") {
         console.log("Fallback to sessionId redirect:", sessionData.sessionId);
 
-        // Create fresh Stripe instance as fallback
         const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PK);
         if (!stripe) {
           throw new Error("Stripe failed to initialize");
