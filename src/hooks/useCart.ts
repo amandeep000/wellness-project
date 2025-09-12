@@ -88,7 +88,7 @@ export const useCart = () => {
     loadCartFromStorage();
   }, [dispatch]);
 
-  // ✅ Updated: Sync cart with backend using cartApi
+  // Sync cart with backend using cartApi
   const syncCartWithBackend = useCallback(async () => {
     if (!currentUser || items.length === 0) {
       throw new Error("User not authenticated or cart is empty");
@@ -132,7 +132,7 @@ export const useCart = () => {
     }
   }, [items, currentUser, dispatch]);
 
-  // ✅ Updated: Load cart from backend using cartApi
+  // Loading the  cart from backend using cartApi
   const loadCartFromBackend = useCallback(async () => {
     if (!currentUser) return;
 

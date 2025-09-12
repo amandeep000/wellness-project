@@ -4,18 +4,20 @@ import api from "../api/axios";
 import { useAppDispatch } from "../hooks/TypedHooks";
 import { clearCart } from "../store/slices/cartSlice";
 
+interface OrderItem {
+  productName: string;
+  productPrice: number;
+  quantity: number;
+  productImage?: string;
+}
+
 interface Order {
   orderId?: string;
   billingAddress?: {
     email?: string;
   };
   totalPrice?: number;
-  items?: Array<{
-    productName: string;
-    productPrice: number;
-    quantity: number;
-    productImage?: string;
-  }>;
+  items?: OrderItem[];
   [key: string]: any;
 }
 
@@ -30,43 +32,35 @@ export default function CheckoutSuccess() {
   useEffect(() => {
     const confirmPayment = async () => {
       try {
-        const sessionId = params.get("session_id");
-
-        if (
-          !sessionId ||
-          typeof sessionId !== "string" ||
-          sessionId.trim() === ""
-        ) {
+        const sessionId = params.get("session_id")?.trim();
+        if (!sessionId) {
           navigate("/", { replace: true });
           return;
         }
 
         const response = await api.get(
-          `/api/v1/checkout/confirm?session_id=${encodeURIComponent(sessionId.trim())}`
+          `/api/v1/checkout/confirm?session_id=${encodeURIComponent(sessionId)}`
         );
 
-        if (response.data?.data) {
-          setOrder(response.data.data);
-          // clearing the cart after successful payment
-          localStorage.removeItem("cart");
-          dispatch(clearCart());
-        } else {
-          throw new Error("Invalid order data received");
-        }
+        const orderData = response.data?.data;
+        if (!orderData) throw new Error("Invalid order data received");
+
+        setOrder(orderData);
+
+        // Clear local cart and Redux store
+        localStorage.removeItem("cart");
+        dispatch(clearCart());
       } catch (err: any) {
         console.error("Payment confirmation error:", err);
-
-        const errorMessage =
+        setError(
           err.response?.data?.message ||
-          err.message ||
-          "Unable to confirm your payment. Please contact support.";
+            err.message ||
+            "Unable to confirm your payment. Please contact support."
+        );
 
-        setError(errorMessage);
-
-        // Redirecting the user to home after 12 secs
         setTimeout(() => {
           navigate("/", { replace: true });
-        }, 12000);
+        }, 6000); // shorter redirect time
       } finally {
         setIsLoading(false);
       }
@@ -169,18 +163,16 @@ export default function CheckoutSuccess() {
           <div className="flex justify-between">
             <span className="text-gray-600">Order ID:</span>
             <span className="font-mono font-medium">
-              {order?.orderId || "js5s8gw8wq6q6g7q8w5w"}
+              {order?.orderId ?? "-"}
             </span>
           </div>
 
-          {order?.totalPrice && (
-            <div className="flex justify-between">
-              <span className="text-gray-600">Total Amount:</span>
-              <span className="font-semibold">
-                ${order.totalPrice.toFixed(2)}
-              </span>
-            </div>
-          )}
+          <div className="flex justify-between">
+            <span className="text-gray-600">Total Amount:</span>
+            <span className="font-semibold">
+              ${order?.totalPrice?.toFixed(2) ?? "0.00"}
+            </span>
+          </div>
 
           {order?.billingAddress?.email && (
             <div className="flex justify-between">
@@ -190,6 +182,32 @@ export default function CheckoutSuccess() {
           )}
         </div>
       </div>
+
+      {/* Optional: Purchased Items */}
+      {order?.items?.length ? (
+        <div className="bg-white rounded-lg p-6 mb-6 border">
+          <h2 className="text-lg font-semibold mb-4">Items Purchased</h2>
+          <ul className="space-y-2">
+            {order.items.map((item, idx) => (
+              <li key={idx} className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  {item.productImage && (
+                    <img
+                      src={item.productImage}
+                      alt={item.productName}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                  )}
+                  <span>{item.productName}</span>
+                </div>
+                <span>
+                  {item.quantity} × ${item.productPrice.toFixed(2)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       <div className="text-center space-y-4">
         <Link

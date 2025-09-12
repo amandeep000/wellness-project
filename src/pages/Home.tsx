@@ -8,7 +8,6 @@ import FeaturedOn from "../components/FeaturedOn";
 import HeroMissionVideo from "../components/HeroMissionVideo";
 import ReviewTemplate from "../components/ReviewTemplate";
 import HomeNewsletter from "../components/HomeNewsletter";
-import SearchPage from "./SearchPage";
 
 const Home = () => {
   const review = [
@@ -42,7 +41,6 @@ const Home = () => {
         <ReviewTemplate review={review} />
       </div>
       <HomeNewsletter />
-      <SearchPage />
     </main>
   );
 };

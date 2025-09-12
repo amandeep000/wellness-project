@@ -8,8 +8,6 @@ import { useAppSelector, useAppDispatch } from "../hooks/TypedHooks";
 import api from "../api/axios";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
-
 const Cart = () => {
   const {
     items,
@@ -19,7 +17,6 @@ const Cart = () => {
     incrementItem,
     decrementItem,
     removeItem,
-    clearAllItems,
     getFreeShippingAmount,
     syncCartWithBackend,
   } = useCart();
@@ -100,6 +97,61 @@ const Cart = () => {
     }
   };
 
+  // const handleCheckout = async () => {
+  //   if (authLoading || isCheckingOut) return;
+  //   setCheckoutError(null);
+
+  //   if (!currentUser) {
+  //     closeCartDrawer();
+  //     navigate("/login", { replace: true, state: { from: "/cart" } });
+  //     return;
+  //   }
+
+  //   if (items.length === 0) {
+  //     setCheckoutError("Your cart is empty. Please add items before checkout.");
+  //     return;
+  //   }
+
+  //   setIsCheckingOut(true);
+  //   try {
+  //     await safeCartSync();
+
+  //     const response = await api.post("/api/v1/checkout/session");
+  //     console.log("stripe checkout sessionId: ", response);
+
+  //     const sessionData = response?.data?.data;
+  //     if (
+  //       !sessionData ||
+  //       !sessionData.sessionId ||
+  //       typeof sessionData.sessionId !== "string"
+  //     ) {
+  //       throw new Error("Invalid checkout session response");
+  //     }
+
+  //     const sessionId = sessionData.sessionId;
+  //     console.log("Extracted sessionID: ", sessionId);
+
+  //     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PK);
+  //     if (!stripe) {
+  //       throw new Error("stripe failed to initialize");
+  //     }
+
+  //     await new Promise((resolve) => setTimeout(resolve, 100));
+
+  //     const { error } = await stripe.redirectToCheckout({ sessionId });
+  //     if (error) {
+  //       throw new Error(error.message);
+  //     }
+
+  //     closeCartDrawer();
+  //   } catch (error) {
+  //     console.log("Checkout error :", error);
+  //     setCheckoutError("Unable to proceed to checkout. Please try again.");
+  //   } finally {
+  //     setIsCheckingOut(false);
+  //   }
+  // };
+
   const handleCheckout = async () => {
     if (authLoading || isCheckingOut) return;
     setCheckoutError(null);
@@ -119,23 +171,48 @@ const Cart = () => {
     try {
       await safeCartSync();
 
-      const { data } = await api.post("/api/v1/checkout/session");
+      const response = await api.post("/api/v1/checkout/session");
+      console.log("Stripe checkout response:", response);
 
-      if (!data?.data?.sessionId) {
+      // Extract both sessionId and URL from response
+      const sessionData = response?.data?.data;
+      if (!sessionData) {
         throw new Error("Invalid checkout session response");
       }
 
-      clearAllItems();
-      dispatch({ type: "cart/clear" });
-      localStorage.removeItem("cart");
-
-      const stripe = await stripePromise;
-      if (!stripe) {
-        throw new Error("Stripe failed to initialize");
+      // Check for session URL first (preferred method)
+      if (sessionData.url && typeof sessionData.url === "string") {
+        console.log("Using session URL for redirect:", sessionData.url);
+        closeCartDrawer();
+        // Direct redirect using session URL - more reliable than redirectToCheckout
+        window.location.assign(sessionData.url);
+        return;
       }
 
-      await stripe.redirectToCheckout({ sessionId: data.data.sessionId });
-      closeCartDrawer();
+      // Fallback to sessionId if URL not available
+      if (sessionData.sessionId && typeof sessionData.sessionId === "string") {
+        console.log("Fallback to sessionId redirect:", sessionData.sessionId);
+
+        // Create fresh Stripe instance as fallback
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PK);
+        if (!stripe) {
+          throw new Error("Stripe failed to initialize");
+        }
+
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: sessionData.sessionId,
+        });
+
+        if (error) {
+          console.error("Stripe redirect error:", error);
+          throw new Error(error.message || "Checkout redirect failed");
+        }
+
+        closeCartDrawer();
+        return;
+      }
+
+      throw new Error("No valid checkout URL or session ID received");
     } catch (error) {
       console.error("Checkout error:", error);
       setCheckoutError("Unable to proceed to checkout. Please try again.");
@@ -154,6 +231,7 @@ const Cart = () => {
   useEffect(() => {
     if (!isCartDrawerOpen) {
       setCheckoutError(null);
+      setIsCheckingOut(false);
       syncAttempts.current = 0;
     }
   }, [isCartDrawerOpen]);

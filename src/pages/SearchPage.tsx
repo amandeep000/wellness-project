@@ -21,7 +21,7 @@ const SearchPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery);
-    }, 400);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);

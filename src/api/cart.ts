@@ -1,4 +1,3 @@
-// api/cartApi.ts
 import api from "./axios";
 
 export const cartApi = {
@@ -14,6 +13,10 @@ export const cartApi = {
 
   clearCart: async () => {
     const response = await api.delete("/api/v1/cart");
+    console.log(
+      "Clear cart request sent to backend successfully: ",
+      response.data
+    );
     return response.data;
   },
 };

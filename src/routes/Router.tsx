@@ -16,6 +16,8 @@ import Signup from "../pages/Signup";
 import Profile from "../pages/Profile";
 import CheckoutSuccess from "../pages/CheckoutSuccess";
 import SearchPage from "../pages/SearchPage";
+import MyOrdersPage from "../pages/MyOrders";
+import AdminPanel from "../pages/AdminPage";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +34,8 @@ const Router = createBrowserRouter(
       <Route path="/signup" element={<Signup />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/success" element={<CheckoutSuccess />} />
+      <Route path="/order" element={<MyOrdersPage />} />
+      <Route path="/admin" element={<AdminPanel />} />
     </Route>
   )
 );

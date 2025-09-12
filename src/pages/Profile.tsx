@@ -231,12 +231,12 @@ const Profile = () => {
             >
               <Home size={20} /> Home
             </Link>
-            {/* <Link
-              to={"#"}
+            <Link
+              to={"/order"}
               className=" items-center gap-4 hover:text-gray-600 hidden"
             >
               <List size={20} /> Orders
-            </Link> */}
+            </Link>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 text-red-600 hover:text-red-800 cursor-pointer"
