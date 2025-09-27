@@ -55,7 +55,7 @@ export const getAllOrders = async () => {
   try {
     const res = await api.get("/api/v1/orders/my");
     console.log("these are all orders :", res.data);
-    return res.data;
+    return res.data.data;
   } catch (error) {
     console.log("there is an error in gatAllOrders: ", error);
     throw error;

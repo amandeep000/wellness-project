@@ -48,7 +48,6 @@ const AdminPanel = () => {
     "basic" | "ingredients" | "benefits" | "mission"
   >("basic");
 
-  // Generate slug from name
   const generateSlug = (name: string) => {
     return name
       .toLowerCase()
@@ -56,7 +55,6 @@ const AdminPanel = () => {
       .replace(/^-|-$/g, "");
   };
 
-  // Handle name change and auto-generate slug
   const handleNameChange = (name: string) => {
     setProduct((prev) => ({
       ...prev,
@@ -65,7 +63,6 @@ const AdminPanel = () => {
     }));
   };
 
-  // Array field handlers
   const addToArray = (field: keyof Product, value: string) => {
     if (value.trim()) {
       setProduct((prev) => ({

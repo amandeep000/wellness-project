@@ -4,23 +4,8 @@ import { useGetUserOrders } from "../hooks/useUpdateProfile";
 import Loader from "../components/Loader";
 
 export default function MyOrdersPage() {
-  // const [orders, setOrders] = useState<Order[]>([]);
-  // const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { data: orders, isLoading } = useGetUserOrders();
-  console.log("these are the orders in the order page: ", orders);
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const res = await api.get("/api/v1/orders/my");
-  //       setOrders(res.data);
-  //     } catch (err: any) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   })();
-  // }, []);
 
   if (isLoading)
     return (
