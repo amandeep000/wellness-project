@@ -138,16 +138,16 @@ const Shop = () => {
         </div>
       </div>
       {/* reviews & videos */}
-      <div className="w-full">
+      {/* <div className="w-full">
         <ProductReviews />
-      </div>
+      </div> */}
       {/* about us */}
-      <div className="w-full border-black border-t">
+      {/* <div className="w-full border-black border-t">
         <BoostEnergy />
-      </div>
-      <div className="w-full">
+      </div> */}
+      {/* <div className="w-full">
         <FeatureBanner />
-      </div>
+      </div> */}
       <div className="w-full">
         <HomeNewsletter />
       </div>

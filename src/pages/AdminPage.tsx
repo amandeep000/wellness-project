@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Plus, X, Save, Tag, Palette, Video, Target } from "lucide-react";
+import api from "../api/axios";
+import toast from "react-hot-toast";
 
 interface Product {
   name: string;
@@ -91,10 +93,18 @@ const AdminPanel = () => {
       ),
     }));
   };
-
-  const handleSave = () => {
-    console.log("Product to save:", product);
-    alert("Product saved! Check console for data structure.");
+  // todo make this save to handle submit and make payload out of it.
+  const handleSubmit = () => {
+    try {
+      const response = api.post("api/v1/addProduct/add-product", product);
+      // if (response) {
+      //   toast.success("Product added Successfully");
+      // }
+      console.log(response);
+    } catch (error) {
+      console.error("Error while submitting Product: ", error);
+      toast.error("Cannot add Product due to an error");
+    }
   };
 
   const ArrayField = ({
@@ -174,11 +184,11 @@ const AdminPanel = () => {
           <div className="flex items-center justify-between h-16">
             <h1 className="text-xl font-bold">Product Admin Panel</h1>
             <button
-              onClick={handleSave}
+              onClick={handleSubmit}
               className="bg-white text-black px-6 py-2 rounded-md hover:bg-gray-100 transition-colors flex items-center space-x-2"
             >
               <Save size={16} />
-              <span>Save Product</span>
+              <span>Add Product</span>
             </button>
           </div>
         </div>
@@ -231,7 +241,7 @@ const AdminPanel = () => {
                     type="text"
                     value={product.name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    className="w-full bg-gray-200 border border-gray-400 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full bg-gray-700 border border-gray-400 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
                     placeholder="Enter product name"
                     required
                   />
@@ -294,7 +304,7 @@ const AdminPanel = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Category ID *
+                    Category*
                   </label>
                   <input
                     type="text"
