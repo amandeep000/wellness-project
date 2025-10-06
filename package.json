@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.11",
+    "@radix-ui/react-slot": "^1.2.3",
     "@reduxjs/toolkit": "^2.8.2",
     "@splidejs/react-splide": "^0.7.12",
     "@stripe/react-stripe-js": "^3.9.2",
