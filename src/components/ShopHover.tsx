@@ -32,8 +32,8 @@ const ShopHover = () => {
     },
     {
       image: "/filters/stressRelief.webp",
-      title: "Stress Relief",
-      categorySlug: "immunity",
+      title: "Collagen",
+      categorySlug: "collagen",
     },
   ];
   const handleShopHoverClick = () => {
